@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/widgets/appbar.dart';
+import 'package:diet_tracker/widgets/foodcard.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -20,16 +21,29 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  final List<Widget> _foodList = [];
 
-  void _incrementCounter() {
+  // void _incrementCounter() {
+  //   setState(() {
+  //     // This call to setState tells the Flutter framework that something has
+  //     // changed in this State, which causes it to rerun the build method below
+  //     // so that the display can reflect the updated values. If we changed
+  //     // _counter without calling setState(), then the build method would not be
+  //     // called again, and so nothing would appear to happen.
+  //     _counter++;
+  //   });
+  // }
+  void _addNewEntry(){
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      _foodList.add(
+        const EntryBlock(
+          date: '2024-04-19',
+          photo: 'assets/ramen.jpg',
+          foodname: '拉麵',
+          place: '數寄屋 銀虎',
+          money: 300,
+          calories: 800,
+      ));
     });
   }
 
@@ -52,47 +66,50 @@ class _MyHomePageState extends State<MyHomePage> {
       //   title: Text(widget.title),
       // ),
       appBar: const MyAppBar(title: 'Diet Tracker'),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            const SizedBox(height: 30),
-            const Text(
-              'You have pushed the button this many times:',
+      // body: Center(
+      //   // Center is a layout widget. It takes a single child and positions it
+      //   // in the middle of the parent.
+      //   child: Column(
+      //     // Column is also a layout widget. It takes a list of children and
+      //     // arranges them vertically. By default, it sizes itself to fit its
+      //     // children horizontally, and tries to be as tall as its parent.
+      //     //
+      //     // Column has various properties to control how it sizes itself and
+      //     // how it positions its children. Here we use mainAxisAlignment to
+      //     // center the children vertically; the main axis here is the vertical
+      //     // axis because Columns are vertical (the cross axis would be
+      //     // horizontal).
+      //     //
+      //     // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
+      //     // action in the IDE, or press "p" in the console), to see the
+      //     // wireframe for each widget.
+      //     children: <Widget>[
+      //       const SizedBox(height: 30),
+      //       const Text(
+      //         'You have pushed the button this many times:',
+      //       ),
+      //       const SizedBox(height: 30),
+      //       Text(
+      //         '$_counter',
+      //         style: Theme.of(context).textTheme.headlineMedium,
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildListDelegate(
+              <Widget>[
+                for (var food in _foodList)
+                  food,
+              ],
             ),
-            const SizedBox(height: 30),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            const SizedBox(height: 30),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            const SizedBox(height: 30),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: _addNewEntry,
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

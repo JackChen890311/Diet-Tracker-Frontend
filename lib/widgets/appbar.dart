@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(60);
-  const MyAppBar({super.key, required this.title});
+  const MyAppBar({super.key, required this.title, this.canGoBack = false});
 
   final String title;
+  final bool? canGoBack;
 
   @override
   Widget build(BuildContext context) {
@@ -19,20 +20,20 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         //     print('Menu button pressed');
         //   },
         // ),
+        automaticallyImplyLeading: canGoBack! ? true : false,
         actions: [
+          const SizedBox(width: 30),
+          IconButton(
+            icon: const Icon(Icons.home_filled),
+            onPressed: () {
+              Navigator.pushNamed(context, '/');
+            }
+          ),
           const SizedBox(width: 30),
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
               Navigator.pushNamed(context, '/account');
-              print('Account button pressed');
-            }
-          ),
-          const SizedBox(width: 30),
-          IconButton(
-            icon: const Icon(Icons.image),
-            onPressed: () {
-              print('Image button pressed');
             }
           ),
           const SizedBox(width: 30),
