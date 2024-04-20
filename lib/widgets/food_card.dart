@@ -3,25 +3,26 @@ import 'package:flutter/material.dart';
 class EntryBlock extends StatelessWidget {
   const EntryBlock({
     super.key,
-    required this.date,
     required this.photo,
+    required this.date,
     required this.foodname,
     this.place,
-    this.money,
+    this.price,
     this.calories,
   });
-  final String date;
   final String photo;
+  final String date;
   final String foodname;
   final String? place;
-  final int? money;
+  final int? price;
   final int? calories;
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return SizedBox(
-      width: 1200,
-      height: 250,
+      width: size.height * 0.8,
+      height: size.width * 0.2,
       child: Card(
         child: Row(
           children: [
@@ -63,7 +64,7 @@ class EntryBlock extends StatelessWidget {
                 const SizedBox(width: 20),
                 const Text('價格 (NTD)', style: TextStyle(fontWeight: FontWeight.bold)),
                 const SizedBox(width: 20),
-                Text('$money'),
+                Text('$price'),
               ]),
 
               Row(children: [

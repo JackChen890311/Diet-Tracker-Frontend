@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:diet_tracker/widgets/appbar.dart';
-import 'package:diet_tracker/widgets/foodcard.dart';
+import 'package:diet_tracker/widgets/app_bar.dart';
+import 'package:diet_tracker/widgets/food_card.dart';
+import 'package:diet_tracker/widgets/entry_input.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -33,18 +34,25 @@ class _MyHomePageState extends State<MyHomePage> {
   //     _counter++;
   //   });
   // }
-  void _addNewEntry(){
-    setState(() {
-      _foodList.add(
-        const EntryBlock(
-          date: '2024-04-19',
-          photo: 'assets/ramen.jpg',
-          foodname: '拉麵',
-          place: '數寄屋 銀虎',
-          money: 300,
-          calories: 800,
-      ));
-    });
+  void _addNewEntry () async {
+    Map newEntry = await showAddEntryDialog(context);
+    if (newEntry.isEmpty) {
+      return;
+    }
+    else{
+      setState(() {
+        _foodList.add(
+          EntryBlock(
+            photo: 'assets/ramen.jpg',
+            date: newEntry['date'],
+            foodname: newEntry['foodname'],
+            place: newEntry['place']?.isEmpty ? null : newEntry['place'],
+            price: newEntry['price']?.isEmpty ? null : int.parse(newEntry['price']),
+            calories: newEntry['calories']?.isEmpty ? null : int.parse(newEntry['calories']),
+          )
+        );
+      });
+    }
   }
 
   @override
@@ -55,6 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       // appBar: AppBar(
       //   // TRY THIS: Try changing the color here to a specific color (to
@@ -101,8 +110,17 @@ class _MyHomePageState extends State<MyHomePage> {
           SliverList(
             delegate: SliverChildListDelegate(
               <Widget>[
-                for (var food in _foodList)
-                  food,
+                ..._foodList.isEmpty 
+                  ? [Column(children:[
+                        SizedBox(height: size.height * 0.3), 
+                        const Text('No entries yet.', 
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )]
+                    )]
+                  : _foodList,
               ],
             ),
           ),
@@ -110,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewEntry,
-        tooltip: 'Increment',
+        tooltip: 'Add New Entry',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
