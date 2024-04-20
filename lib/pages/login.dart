@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.only(right: 75),
+        padding: EdgeInsets.only(right: MediaQuery.of(context).size.width*0.05),
         child: MouseRegion(
           cursor: SystemMouseCursors.click,
           child: Column(
@@ -53,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: isActive ? Colors.deepPurple : Colors.grey,
                 ),
               ),
-              const SizedBox(height: 6),
+               SizedBox(height: MediaQuery.of(context).size.width*0.01),
               isActive
                   ? Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
@@ -72,11 +72,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _loginWithButton({required String image, bool isActive = false}) {
       return MouseRegion(
-        onEnter: (event){isActive=true;},
-        onExit: (event){isActive=false;},
         child: Container(
-          width: 90,
-          height: 70,
+          width: MediaQuery.of(context).size.width*0.08,
+          height: MediaQuery.of(context).size.width*0.06,
           decoration: isActive
               ? BoxDecoration(
                   color: Colors.white,
@@ -190,7 +188,9 @@ class _LoginPageState extends State<LoginPage> {
                               recognizer:
                                   TapGestureRecognizer()
                                     ..onTap = () {
-                                      Navigator.pushNamed(context, '/register');
+                                      setState(() {
+                                        _isSignIn = false;
+                                      });
                                     }),
                         ],
                       ),
