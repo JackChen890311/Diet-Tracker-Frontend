@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:diet_tracker/pages/home.dart';
 import 'package:diet_tracker/pages/account.dart';
+import 'package:diet_tracker/pages/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,13 +36,15 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: LoginPage(),
       onGenerateRoute: (settings) {
         switch (settings.name) {
-          case '/':
+          case '/home':
             return pageTransition(settings, const MyHomePage());
           case '/account':
             return pageTransition(settings, const MyAccountPage());
+          case '/login':
+            return pageTransition(settings, const LoginPage());
         }
       }
     );

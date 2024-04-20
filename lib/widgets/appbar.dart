@@ -20,13 +20,19 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
         //     print('Menu button pressed');
         //   },
         // ),
+        leading: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () {
+            Navigator.pushNamed(context, '/login');
+          }
+        ),
         automaticallyImplyLeading: canGoBack! ? true : false,
         actions: [
           const SizedBox(width: 30),
           IconButton(
             icon: const Icon(Icons.home_filled),
             onPressed: () {
-              Navigator.pushNamed(context, '/');
+              Navigator.pushNamed(context, '/home');
             }
           ),
           const SizedBox(width: 30),
