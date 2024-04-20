@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:diet_tracker/widgets/appbar.dart';
+import 'package:diet_tracker/widgets/app_bar.dart';
 
 class MyAccountPage extends StatefulWidget {
   const MyAccountPage({super.key});
