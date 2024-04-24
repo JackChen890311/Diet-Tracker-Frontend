@@ -218,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Image.asset(
-                'illustration.png',
+                'images/illustration-1.png',
                 width: MediaQuery.of(context).size.width*0.2,
               ),
               _isSignIn ? Padding(
