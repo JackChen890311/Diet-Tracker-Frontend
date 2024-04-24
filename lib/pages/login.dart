@@ -22,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isObscured=true;
   bool _isObscuredCheck=true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
 
   @override 
   void initState() {
@@ -131,6 +132,16 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     print('The form is valid!');
+    Navigator.pushNamed(context, '/home');
+  }
+
+  Future<void> submitRegisterForm(context) async {
+    if (!_registerFormKey.currentState!.validate()) {
+      print('The form is invalid.');
+      return;
+    }
+    print('The form is valid!');
+    Navigator.pushNamed(context, '/login');
   }
 
 
@@ -235,7 +246,7 @@ class _LoginPageState extends State<LoginPage> {
                         // standard sign-in
                         TextFormField(
                           decoration: InputDecoration(
-                            hintText: 'Enter email or username',
+                            hintText: 'Username',
                             filled: true,
                             fillColor: Colors.blueGrey[50],
                             labelStyle: const TextStyle(fontSize: 12),
@@ -251,10 +262,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           validator:(value) {
                             if(value!.isEmpty){
-                              return '請輸入信箱';
-                            }
-                            if (value.isNotEmpty && !EmailValidator.validate(value)){
-                              return '請輸入正確信箱';
+                              return '請輸入使用者名稱';
                             }
                             return null;
                           },
@@ -313,9 +321,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           child: ElevatedButton(
                             onPressed: (){
-                              // TODO:
                               submitLoginForm(context);
-                              // Navigator.pushNamed(context, '/home');
                             },
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.deepPurple,
@@ -332,34 +338,34 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 40),
                         // other sign-in ways 
-                        Row(children: [
-                          Expanded(
-                            child: Divider(
-                              color: Colors.grey[300],
-                              height: 50,
-                            ),
-                          ),
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            child: Text("Or continue with"),
-                          ),
-                          Expanded(
-                            child: Divider(
-                              color: Colors.grey[400],
-                              height: 50,
-                            ),
-                          ),
-                        ]),
-                        const SizedBox(height: 40),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // TODO
-                            _loginWithButton(image: 'images/google.png'),
-                            _loginWithButton(image: 'images/github.png', isActive: true),
-                            _loginWithButton(image: 'images/facebook.png'),
-                          ],
-                        ),
+                        // Row(children: [
+                        //   Expanded(
+                        //     child: Divider(
+                        //       color: Colors.grey[300],
+                        //       height: 50,
+                        //     ),
+                        //   ),
+                        //   const Padding(
+                        //     padding: EdgeInsets.symmetric(horizontal: 20),
+                        //     child: Text("Or continue with"),
+                        //   ),
+                        //   Expanded(
+                        //     child: Divider(
+                        //       color: Colors.grey[400],
+                        //       height: 50,
+                        //     ),
+                        //   ),
+                        // ]),
+                        // const SizedBox(height: 40),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     // TODO
+                        //     _loginWithButton(image: 'images/google.png'),
+                        //     _loginWithButton(image: 'images/github.png', isActive: true),
+                        //     _loginWithButton(image: 'images/facebook.png'),
+                        //   ],
+                        // ),
                       ],
                     ),
                   ),
@@ -371,7 +377,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width*0.3,
                   child:Form(
-                    key: GlobalKey<FormState>(),
+                    key: _registerFormKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -423,8 +429,11 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           validator:(value) {
-                            if (value!.isNotEmpty && !EmailValidator.validate(value)){
-                              return '請輸入正確信箱';
+                            if(value!.isEmpty){
+                              return '請輸入信箱';
+                            }
+                            if (value.isNotEmpty && !EmailValidator.validate(value)){
+                              return '請輸入正確信箱格式';
                             }
                             if (value.contains(' ')) {
                               return '請勿包含空白格';
@@ -439,7 +448,7 @@ class _LoginPageState extends State<LoginPage> {
                         TextFormField(
                           obscureText: _isObscured,
                           decoration: InputDecoration(
-                            hintText: 'Password',
+                            hintText: 'Enter password',
                             suffixIcon:IconButton(
                               onPressed: () => setState(() => _isObscured = !_isObscured),
                               icon: Icon(
@@ -481,7 +490,7 @@ class _LoginPageState extends State<LoginPage> {
                         TextFormField(
                           obscureText: _isObscuredCheck,
                           decoration: InputDecoration(
-                            hintText: 'Password again',
+                            hintText: 'Enter password again',
                             suffixIcon:IconButton(
                               onPressed: () => setState(() => _isObscuredCheck = !_isObscuredCheck),
                               icon: Icon(
@@ -533,9 +542,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           child: ElevatedButton(
                             onPressed: (){
-                              // TODO:
-                              // submitRegisterForm(context);
-                              Navigator.pushNamed(context, '/login');
+                              submitRegisterForm(context);
                             },
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.deepPurple,
