@@ -14,14 +14,24 @@ class _LoginPageState extends State<LoginPage> {
 
   late String _account;
   late String _password;
+  late String _registerEmail;
+  late String _registerUsername;
+  late String _registerPassword;
+  late String _registerPasswordConfirmation;
   late bool _isSignIn;
   bool _isObscured=true;
+  bool _isObscuredCheck=true;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override 
   void initState() {
     super.initState();
     _account = '';
     _password = '';
+    _registerEmail = '';
+    _registerUsername = '';
+    _registerPassword = '';
+    _registerPasswordConfirmation = '';
     _isSignIn = true;
   }
 
@@ -115,6 +125,14 @@ class _LoginPageState extends State<LoginPage> {
       );
     }
 
+  Future<void> submitLoginForm(context) async {
+    if (!_formKey.currentState!.validate()) {
+      print('The form is invalid.');
+      return;
+    }
+    print('The form is valid!');
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -200,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Image.asset(
-                'images/illustration-1.png',
+                'illustration.png',
                 width: MediaQuery.of(context).size.width*0.2,
               ),
               _isSignIn ? Padding(
@@ -209,7 +227,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width*0.3,
                   child: Form(
-                    key: GlobalKey<FormState>(),
+                    key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -217,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                         // standard sign-in
                         TextFormField(
                           decoration: InputDecoration(
-                            hintText: 'Enter email or Phone number',
+                            hintText: 'Enter email or username',
                             filled: true,
                             fillColor: Colors.blueGrey[50],
                             labelStyle: const TextStyle(fontSize: 12),
@@ -232,7 +250,10 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           validator:(value) {
-                            if (value!.isNotEmpty && !EmailValidator.validate(value)){
+                            if(value!.isEmpty){
+                              return '請輸入信箱';
+                            }
+                            if (value.isNotEmpty && !EmailValidator.validate(value)){
                               return '請輸入正確信箱';
                             }
                             return null;
@@ -293,8 +314,8 @@ class _LoginPageState extends State<LoginPage> {
                           child: ElevatedButton(
                             onPressed: (){
                               // TODO:
-                              // submitLoginForm(context);
-                              Navigator.pushNamed(context, '/home');
+                              submitLoginForm(context);
+                              // Navigator.pushNamed(context, '/home');
                             },
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.deepPurple,
@@ -344,7 +365,196 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               )
-              : SizedBox(width: MediaQuery.of(context).size.width*0.3),
+              : Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.height/25),
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width*0.3,
+                  child:Form(
+                    key: GlobalKey<FormState>(),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        TextFormField(
+                          decoration: InputDecoration(
+                            hintText: 'Enter username',
+                            filled: true,
+                            fillColor: Colors.blueGrey[50],
+                            labelStyle: const TextStyle(fontSize: 12),
+                            contentPadding: const EdgeInsets.only(left: 30),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          validator:(value) {
+                            if(value!.isEmpty){
+                              return '請輸入使用者名稱';
+                            }
+                            if (value.contains(' ')) {
+                              return '請勿包含空白格';
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            _registerUsername = newValue!.trim();
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            hintText: 'Enter email',
+                            filled: true,
+                            fillColor: Colors.blueGrey[50],
+                            labelStyle: const TextStyle(fontSize: 12),
+                            contentPadding: const EdgeInsets.only(left: 30),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          validator:(value) {
+                            if (value!.isNotEmpty && !EmailValidator.validate(value)){
+                              return '請輸入正確信箱';
+                            }
+                            if (value.contains(' ')) {
+                              return '請勿包含空白格';
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            _registerEmail = newValue!.trim();
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          obscureText: _isObscured,
+                          decoration: InputDecoration(
+                            hintText: 'Password',
+                            suffixIcon:IconButton(
+                              onPressed: () => setState(() => _isObscured = !_isObscured),
+                              icon: Icon(
+                                _isObscured
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.grey,
+                              )),
+                            filled: true,
+                            fillColor: Colors.blueGrey[50],
+                            labelStyle: const TextStyle(fontSize: 12),
+                            contentPadding: const EdgeInsets.only(left: 30),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          validator:(value) {
+                            setState(() {
+                              _registerPassword = value!.trim();
+                            });
+                            if(value!.isEmpty){
+                              return '請輸入密碼';
+                            }
+                            if (value.contains(' ')) {
+                              return '請勿包含空白格';
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            _registerPassword = newValue!.trim();
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          obscureText: _isObscuredCheck,
+                          decoration: InputDecoration(
+                            hintText: 'Password again',
+                            suffixIcon:IconButton(
+                              onPressed: () => setState(() => _isObscuredCheck = !_isObscuredCheck),
+                              icon: Icon(
+                                _isObscuredCheck
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.grey,
+                              )),
+                            filled: true,
+                            fillColor: Colors.blueGrey[50],
+                            labelStyle: const TextStyle(fontSize: 12),
+                            contentPadding: const EdgeInsets.only(left: 30),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          validator:(value) {
+                            if (value!.isEmpty) {
+                              return '請再次輸入密碼';
+                            } else if (value != _registerPassword) {
+                              return '密碼不一致';
+                            }
+                            if (value.contains(' ')) {
+                              return '請勿包含空白格';
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            _registerPasswordConfirmation = newValue!.trim();
+                          },
+                        ),
+                        const SizedBox(height: 40),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.deepPurple.shade100,
+                                spreadRadius: 10,
+                                blurRadius: 20,
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            onPressed: (){
+                              // TODO:
+                              // submitRegisterForm(context);
+                              Navigator.pushNamed(context, '/login');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.deepPurple,
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            child:const SizedBox(
+                              width: double.infinity,
+                              height: 50,
+                              child: Center(child: Text("Register"))),
+                          ),
+                        ),
+                        
+                      ])
+                    ),
+                  )
+                ),
             ],
           )
         ],
