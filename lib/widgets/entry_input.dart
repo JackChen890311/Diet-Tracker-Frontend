@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:diet_tracker/utils/style.dart';
 
 bool submitLoginForm(formKey) {
     if (!formKey.currentState!.validate()) {
@@ -10,6 +11,10 @@ bool submitLoginForm(formKey) {
       formKey.currentState?.save();
       return true;
     }
+    
+    // debug
+    // formKey.currentState?.save();
+    // return true;
 }
 
 Future<dynamic> showAddEntryDialog(BuildContext context) {
@@ -25,7 +30,9 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Please enter a new entry:'),
+          title: const CustomText(
+            label: 'Please enter a new entry:', color: CustomColor.darkBlue,
+            type: 'titleLarge', align: 'left',),
           content: SizedBox(
             width: size.width * 0.8,
             height: size.height * 0.8,
@@ -91,14 +98,14 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Cancel'),
+              child: const CustomText(label: 'Cancel'),
               onPressed: () {
                 Map emptyEntry = {};
                 Navigator.pop(context, emptyEntry);
               },
             ),
             TextButton(
-              child: const Text('Done'),
+              child: const CustomText(label: 'Done'),
               onPressed: () {
                 var check = submitLoginForm(formKey);
                 if (check) {

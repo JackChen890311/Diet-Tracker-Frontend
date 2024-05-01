@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:diet_tracker/utils/style.dart';
 
 class EntryBlock extends StatelessWidget {
   const EntryBlock({
@@ -21,8 +22,7 @@ class EntryBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return SizedBox(
-      width: size.height * 0.8,
-      height: size.width * 0.2,
+      height: size.height * 0.4,
       child: Card(
         child: Row(
           children: [
@@ -35,45 +35,45 @@ class EntryBlock extends StatelessWidget {
                 const SizedBox(width: 20),
                 const Icon(Icons.calendar_today),
                 const SizedBox(width: 20),
-                const Text('日期', style: TextStyle(fontWeight: FontWeight.bold)),
+                const CustomText(label: '日期'),
                 const SizedBox(width: 20),
-                Text(date),
+                CustomText(label: date),
               ]),
 
               Row(children: [
                 const SizedBox(width: 20),
                 const Icon(Icons.fastfood),
                 const SizedBox(width: 20),
-                const Text('餐點名稱', style: TextStyle(fontWeight: FontWeight.bold)),
+                const CustomText(label: '餐點名稱'),
                 const SizedBox(width: 20),
-                Text(foodname),
+                CustomText(label: foodname),
               ]),
 
               Row(children: [
                 const SizedBox(width: 20),
                 const Icon(Icons.location_on),
                 const SizedBox(width: 20),
-                const Text('店家名稱', style: TextStyle(fontWeight: FontWeight.bold)),
+                const CustomText(label: '店家名稱'),
                 const SizedBox(width: 20),
-                Text('$place'),
+                CustomText(label: '$place'),
               ]),
 
               Row(children: [
                 const SizedBox(width: 20),
                 const Icon(Icons.attach_money),
                 const SizedBox(width: 20),
-                const Text('價格 (NTD)', style: TextStyle(fontWeight: FontWeight.bold)),
+                const CustomText(label: '價格 (NTD)'),
                 const SizedBox(width: 20),
-                Text('$price'),
+                CustomText(label: '$price'),
               ]),
 
               Row(children: [
                 const SizedBox(width: 20),
                 const Icon(Icons.local_fire_department),
                 const SizedBox(width: 20),
-                const Text('卡路里', style: TextStyle(fontWeight: FontWeight.bold)),
+                const CustomText(label: '卡路里'),
                 const SizedBox(width: 20),
-                Text('$calories'),
+                CustomText(label: '$calories'),
               ]),
           ],
         ),

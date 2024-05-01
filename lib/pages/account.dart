@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/widgets/app_bar.dart';
 
-class MyAccountPage extends StatefulWidget {
-  const MyAccountPage({super.key});
+class AccountPage extends StatefulWidget {
+  const AccountPage({super.key});
   final String title = 'Account';
 
   @override
-  State<MyAccountPage> createState() => _MyAccountPageState();
+  State<AccountPage> createState() => _AccountPageState();
 }
 
-class _MyAccountPageState extends State<MyAccountPage> {
+class _AccountPageState extends State<AccountPage> {
   int _counter = 0;
 
   void _incrementCounter() {

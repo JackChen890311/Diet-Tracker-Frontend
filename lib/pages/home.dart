@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:diet_tracker/widgets/app_bar.dart';
 import 'package:diet_tracker/widgets/food_card.dart';
 import 'package:diet_tracker/widgets/entry_input.dart';
+import 'package:diet_tracker/utils/style.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -18,10 +19,10 @@ class MyHomePage extends StatefulWidget {
   final String title = 'Diet Tracker';
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class HomePageState extends State<HomePage> {
   final List<Widget> _foodList = [];
 
   // void _incrementCounter() {
@@ -44,8 +45,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _foodList.add(
           EntryBlock(
             photo: 'assets/ramen.jpg',
-            date: newEntry['date'],
-            foodname: newEntry['foodname'],
+            date: newEntry['date']?.isEmpty ? "null" : newEntry['date'],
+            foodname: newEntry['foodname'].isEmpty ? "null" : newEntry['foodname'],
             place: newEntry['place']?.isEmpty ? null : newEntry['place'],
             price: newEntry['price']?.isEmpty ? null : int.parse(newEntry['price']),
             calories: newEntry['calories']?.isEmpty ? null : int.parse(newEntry['calories']),
@@ -113,11 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ..._foodList.isEmpty 
                   ? [Column(children:[
                         SizedBox(height: size.height * 0.3), 
-                        const Text('No entries yet.', 
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                        const CustomText(label: "No entries yet.", 
+                                    type: 'displaySmall',
                                   )]
                     )]
                   : _foodList,
