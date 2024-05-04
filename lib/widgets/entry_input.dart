@@ -35,61 +35,91 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
             type: 'titleLarge', align: 'left',),
           content: SizedBox(
             width: size.width * 0.8,
-            height: size.height * 0.8,
+            height: size.height * 0.3,
             child: Column(
               children: [
                 Form(
                   key: formKey,
                   child: Column(
                     children: [
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Date',
-                          hintText: 'YYYY-MM-DD',
-                        ),
-                        validator: (value) {
-                          // TODO: Use date picker instead of tryParse
-                          if (DateTime.tryParse(value!) == null) {
-                            return 'Please enter a valid date';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) => date = value!,
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Food Name',
-                          hintText: 'e.g. Fried Chicken',
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter a food name';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) => foodname = value!,
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Place',
-                          hintText: 'e.g. KFC',
-                        ),
-                        onSaved: (value) => place = value!,
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Price',
-                          hintText: 'e.g. 100',
-                        ),
-                        onSaved: (value) => price = value!,
-                      ),
-                      TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'Calories',
-                          hintText: 'e.g. 500',
-                        ),
-                        onSaved: (value) => calories = value!,
-                      ),
+                      Row(children: [
+                        const Icon(Icons.calendar_today),
+                        SizedBox(width: size.width * 0.025),
+                        SizedBox(width: size.width * 0.3, child: 
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              labelText: 'Date',
+                              hintText: 'YYYY-MM-DD',
+                            ),
+                            validator: (value) {
+                              // TODO: Use date picker instead of tryParse
+                              if (DateTime.tryParse(value!) == null) {
+                                return 'Please enter a valid date';
+                              }
+                              return null;
+                            },
+                            onSaved: (value) => date = value!,
+                          ),
+                        )
+                      ]),
+                      Row(
+                        children: [
+                          const Icon(Icons.fastfood),
+                          SizedBox(width: size.width * 0.025),
+                          SizedBox(width: size.width * 0.3, child: 
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Food Name',
+                                hintText: 'e.g. Fried Chicken',
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter a food name';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) => foodname = value!,
+                            ),
+                          ),
+                          SizedBox(width: size.width * 0.025),
+                          const Icon(Icons.location_on),
+                          SizedBox(width: size.width * 0.025),
+                          SizedBox(width: size.width * 0.3, child: 
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Place',
+                                hintText: 'e.g. KFC',
+                              ),
+                              onSaved: (value) => place = value!,
+                            ),
+                          )
+                      ]),
+                      Row(
+                        children: [
+                          const Icon(Icons.attach_money),
+                          SizedBox(width: size.width * 0.025),
+                          SizedBox(width: size.width * 0.3, child: 
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Price',
+                                hintText: 'e.g. 100',
+                              ),
+                              onSaved: (value) => price = value!,
+                            ),
+                          ),
+                          SizedBox(width: size.width * 0.025),
+                          const Icon(Icons.local_fire_department),
+                          SizedBox(width: size.width * 0.025),
+                          SizedBox(width: size.width * 0.3, child: 
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Calories',
+                                hintText: 'e.g. 500',
+                              ),
+                              onSaved: (value) => calories = value!,
+                            ),
+                          ),
+                      ]),
                     ],
                   ),
                 )

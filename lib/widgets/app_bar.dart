@@ -40,16 +40,16 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           const SizedBox(width: 30),
           IconButton(
-            icon: const Icon(Icons.person),
+            icon: const Icon(Icons.show_chart),
             onPressed: () {
-              Navigator.pushNamed(context, '/account');
+              Navigator.pushNamed(context, '/chart');
             }
           ),
           const SizedBox(width: 30),
           IconButton(
-            icon: const Icon(Icons.show_chart),
+            icon: const Icon(Icons.person),
             onPressed: () {
-              Navigator.pushNamed(context, '/chart');
+              Navigator.pushNamed(context, '/account');
             }
           ),
           const SizedBox(width: 30),
