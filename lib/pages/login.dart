@@ -188,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     const SizedBox(height: 5),
                     Image.asset(
-                      'images/diet.png',
+                      'assets/images/diet.png',
                       width: MediaQuery.of(context).size.width*0.08,
                     ),
                     const SizedBox(height: 25),
@@ -229,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               Image.asset(
-                'images/illustration-1.png',
+                'assets/images/illustration-1.png',
                 width: MediaQuery.of(context).size.width*0.2,
               ),
               _isSignIn ? Padding(
