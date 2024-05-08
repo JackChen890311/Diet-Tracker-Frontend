@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:diet_tracker/pages/home.dart';
-import 'package:diet_tracker/pages/account.dart';
+import 'package:diet_tracker/pages/account2.dart';
 import 'package:diet_tracker/pages/login.dart';
 import 'package:diet_tracker/pages/chart.dart';
 

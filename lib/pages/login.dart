@@ -232,144 +232,149 @@ class _LoginPageState extends State<LoginPage> {
                 'assets/images/illustration-1.png',
                 width: MediaQuery.of(context).size.width*0.2,
               ),
-              _isSignIn ? Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.height/25),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width*0.3,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // standard sign-in
-                        TextFormField(
-                          decoration: InputDecoration(
-                            hintText: 'Username',
-                            filled: true,
-                            fillColor: Colors.blueGrey[50],
-                            labelStyle: const TextStyle(fontSize: 12),
-                            contentPadding: const EdgeInsets.only(left: 30),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          validator:(value) {
-                            if(value!.isEmpty){
-                              return '請輸入使用者名稱';
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) {
-                            _account = newValue!.trim();
-                          },
-                        ),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                          obscureText: _isObscured,
-                          decoration: InputDecoration(
-                            hintText: 'Password',
-                            suffixIcon:IconButton(
-                              onPressed: () => setState(() => _isObscured = !_isObscured),
-                              icon: Icon(
-                                _isObscured
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                                color: Colors.grey,
-                              )),
-                            filled: true,
-                            fillColor: Colors.blueGrey[50],
-                            labelStyle: const TextStyle(fontSize: 12),
-                            contentPadding: const EdgeInsets.only(left: 30),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          validator:(value) {
-                            if(value!.isEmpty){
-                              return '請輸入密碼';
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) {
-                            _password = newValue!.trim();
-                          },
-                        ),
-                        const SizedBox(height: 40),
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.deepPurple.shade100,
-                                spreadRadius: 10,
-                                blurRadius: 20,
+              _isSignIn ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: MediaQuery.of(context).size.height/25),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width*0.3,
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            // standard sign-in
+                            TextFormField(
+                              decoration: InputDecoration(
+                                hintText: 'Username',
+                                filled: true,
+                                fillColor: Colors.blueGrey[50],
+                                labelStyle: const TextStyle(fontSize: 12),
+                                contentPadding: const EdgeInsets.only(left: 30),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
                               ),
-                            ],
-                          ),
-                          child: ElevatedButton(
-                            onPressed: (){
-                              submitLoginForm(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.deepPurple,
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
+                              validator:(value) {
+                                if(value!.isEmpty){
+                                  return '請輸入使用者名稱';
+                                }
+                                return null;
+                              },
+                              onSaved: (newValue) {
+                                _account = newValue!.trim();
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              obscureText: _isObscured,
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                suffixIcon:IconButton(
+                                  onPressed: () => setState(() => _isObscured = !_isObscured),
+                                  icon: Icon(
+                                    _isObscured
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: Colors.grey,
+                                  )),
+                                filled: true,
+                                fillColor: Colors.blueGrey[50],
+                                labelStyle: const TextStyle(fontSize: 12),
+                                contentPadding: const EdgeInsets.only(left: 30),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                              ),
+                              validator:(value) {
+                                if(value!.isEmpty){
+                                  return '請輸入密碼';
+                                }
+                                return null;
+                              },
+                              onSaved: (newValue) {
+                                _password = newValue!.trim();
+                              },
+                            ),
+                            const SizedBox(height: 40),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(30),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.deepPurple.shade100,
+                                    spreadRadius: 10,
+                                    blurRadius: 20,
+                                  ),
+                                ],
+                              ),
+                              child: ElevatedButton(
+                                onPressed: (){
+                                  submitLoginForm(context);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.deepPurple,
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
+                                ),
+                                child:const SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: Center(child: Text("Sign In"))),
                               ),
                             ),
-                            child:const SizedBox(
-                              width: double.infinity,
-                              height: 50,
-                              child: Center(child: Text("Sign In"))),
-                          ),
+                            const SizedBox(height: 40),
+                            // other sign-in ways 
+                            // Row(children: [
+                            //   Expanded(
+                            //     child: Divider(
+                            //       color: Colors.grey[300],
+                            //       height: 50,
+                            //     ),
+                            //   ),
+                            //   const Padding(
+                            //     padding: EdgeInsets.symmetric(horizontal: 20),
+                            //     child: Text("Or continue with"),
+                            //   ),
+                            //   Expanded(
+                            //     child: Divider(
+                            //       color: Colors.grey[400],
+                            //       height: 50,
+                            //     ),
+                            //   ),
+                            // ]),
+                            // const SizedBox(height: 40),
+                            // Row(
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   children: [
+                            //     // TODO
+                            //     _loginWithButton(image: 'images/google.png'),
+                            //     _loginWithButton(image: 'images/github.png', isActive: true),
+                            //     _loginWithButton(image: 'images/facebook.png'),
+                            //   ],
+                            // ),
+                          ],
                         ),
-                        const SizedBox(height: 40),
-                        // other sign-in ways 
-                        // Row(children: [
-                        //   Expanded(
-                        //     child: Divider(
-                        //       color: Colors.grey[300],
-                        //       height: 50,
-                        //     ),
-                        //   ),
-                        //   const Padding(
-                        //     padding: EdgeInsets.symmetric(horizontal: 20),
-                        //     child: Text("Or continue with"),
-                        //   ),
-                        //   Expanded(
-                        //     child: Divider(
-                        //       color: Colors.grey[400],
-                        //       height: 50,
-                        //     ),
-                        //   ),
-                        // ]),
-                        // const SizedBox(height: 40),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //   children: [
-                        //     // TODO
-                        //     _loginWithButton(image: 'images/google.png'),
-                        //     _loginWithButton(image: 'images/github.png', isActive: true),
-                        //     _loginWithButton(image: 'images/facebook.png'),
-                        //   ],
-                        // ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               )
               : Padding(
                 padding: EdgeInsets.symmetric(
