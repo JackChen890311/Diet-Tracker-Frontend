@@ -38,6 +38,7 @@ dependencies:
   page_transition: ^2.1.0
   email_validator: ^2.1.17
   fl_chart: ^0.67.0
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

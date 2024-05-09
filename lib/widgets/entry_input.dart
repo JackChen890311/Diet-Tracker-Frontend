@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/utils/style.dart';
+import 'package:diet_tracker/utils/entry.dart';
 
-bool submitLoginForm(formKey) {
+bool submitInputForm(formKey) {
     if (!formKey.currentState!.validate()) {
       print('The form is invalid.');
       return false;
@@ -21,7 +22,7 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
     var size = MediaQuery.of(context).size;
     var date = '';
     var foodname = '';
-    var place = '';
+    var restoName = '';
     var price = '';
     var calories = '';
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -35,7 +36,7 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
             type: 'titleLarge', align: 'left',),
           content: SizedBox(
             width: size.width * 0.8,
-            height: size.height * 0.3,
+            height: size.height * 0.35,
             child: Column(
               children: [
                 Form(
@@ -74,7 +75,7 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please enter a food name';
+                                  return 'Please enter food name';
                                 }
                                 return null;
                               },
@@ -87,10 +88,16 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
                           SizedBox(width: size.width * 0.3, child: 
                             TextFormField(
                               decoration: const InputDecoration(
-                                labelText: 'Place',
+                                labelText: 'Restaurant Name',
                                 hintText: 'e.g. KFC',
                               ),
-                              onSaved: (value) => place = value!,
+                              onSaved: (value) => restoName = value!,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Please enter restaurant name';
+                                }
+                                return null;
+                              },
                             ),
                           )
                       ]),
@@ -105,6 +112,17 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
                                 hintText: 'e.g. 100',
                               ),
                               onSaved: (value) => price = value!,
+                              validator: (value) {
+                                if (int.tryParse(value!) == null){
+                                    return 'Please enter a valid price';
+                                }
+                                else{
+                                  if (int.tryParse(value)! < 0){
+                                    return 'Please enter a valid price';
+                                  }
+                                }
+                                return null;
+                              },
                             ),
                           ),
                           SizedBox(width: size.width * 0.025),
@@ -117,6 +135,17 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
                                 hintText: 'e.g. 500',
                               ),
                               onSaved: (value) => calories = value!,
+                              validator: (value) {
+                                if (int.tryParse(value!) == null){
+                                    return 'Please enter a valid calories';
+                                }
+                                else{
+                                  if (int.tryParse(value)! < 0){
+                                    return 'Please enter a valid calories';
+                                  }
+                                }
+                                return null;
+                              },
                             ),
                           ),
                       ]),
@@ -130,22 +159,26 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
             TextButton(
               child: const CustomText(label: 'Cancel'),
               onPressed: () {
-                Map emptyEntry = {};
+                Entry emptyEntry = Entry(entryID: 0);
                 Navigator.pop(context, emptyEntry);
               },
             ),
             TextButton(
               child: const CustomText(label: 'Done'),
               onPressed: () {
-                var check = submitLoginForm(formKey);
+                var check = submitInputForm(formKey);
                 if (check) {
-                  Map<String, dynamic> newEntry = {
-                    'date': date,
-                    'foodname': foodname,
-                    'place': place,
-                    'price': price,
-                    'calories': calories,
-                  };
+                  Entry newEntry = Entry(
+                    entryID: DateTime.now().millisecondsSinceEpoch,
+                    entryImage: 'assets/ramen.jpg',
+                    user: null, // TODO: add user
+                    date: DateTime.parse(date),
+                    foodName: foodname,
+                    restoName: restoName,
+                    price: int.parse(price),
+                    calories: int.parse(calories),
+                  );
+                  // TODO: send new entry to db
                   Navigator.pop(context, newEntry);
                 }
               },

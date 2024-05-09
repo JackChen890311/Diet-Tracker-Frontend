@@ -1,32 +1,32 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/utils/style.dart';
+import 'package:diet_tracker/utils/entry.dart';
 
 class EntryBlock extends StatelessWidget {
   const EntryBlock({
     super.key,
-    required this.photo,
-    required this.date,
-    required this.foodname,
-    this.place,
-    this.price,
-    this.calories,
+    required this.entry,
   });
-  final String photo;
-  final String date;
-  final String foodname;
-  final String? place;
-  final int? price;
-  final int? calories;
+
+  final Entry entry;
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    var photo = entry.entryImage;
+    var date = DateFormat('yyyy-MM-dd').format(entry.date!);
+    var foodname = entry.foodName;
+    var restoName = entry.restoName;
+    var price = entry.price;
+    var calories = entry.calories;
+
     return SizedBox(
       height: size.height * 0.4,
       child: Card(
         child: Row(
           children: [
-            Image.asset(photo),
+            Image.asset(photo!),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -46,7 +46,7 @@ class EntryBlock extends StatelessWidget {
                 const SizedBox(width: 20),
                 const CustomText(label: '餐點名稱'),
                 const SizedBox(width: 20),
-                CustomText(label: foodname),
+                CustomText(label: foodname!),
               ]),
 
               Row(children: [
@@ -55,7 +55,7 @@ class EntryBlock extends StatelessWidget {
                 const SizedBox(width: 20),
                 const CustomText(label: '店家名稱'),
                 const SizedBox(width: 20),
-                CustomText(label: '$place'),
+                CustomText(label: '$restoName'),
               ]),
 
               Row(children: [

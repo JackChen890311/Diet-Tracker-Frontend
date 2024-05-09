@@ -3,6 +3,7 @@ import 'package:diet_tracker/widgets/app_bar.dart';
 import 'package:diet_tracker/widgets/food_card.dart';
 import 'package:diet_tracker/widgets/entry_input.dart';
 import 'package:diet_tracker/utils/style.dart';
+import 'package:diet_tracker/utils/entry.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -36,21 +37,14 @@ class HomePageState extends State<HomePage> {
   //   });
   // }
   void _addNewEntry () async {
-    Map newEntry = await showAddEntryDialog(context);
-    if (newEntry.isEmpty) {
+    Entry newEntry = await showAddEntryDialog(context);
+    if (newEntry.entryID == 0) {
       return;
     }
     else{
       setState(() {
         _foodList.add(
-          EntryBlock(
-            photo: 'assets/ramen.jpg',
-            date: newEntry['date']?.isEmpty ? "null" : newEntry['date'],
-            foodname: newEntry['foodname'].isEmpty ? "null" : newEntry['foodname'],
-            place: newEntry['place']?.isEmpty ? null : newEntry['place'],
-            price: newEntry['price']?.isEmpty ? null : int.parse(newEntry['price']),
-            calories: newEntry['calories']?.isEmpty ? null : int.parse(newEntry['calories']),
-          )
+          EntryBlock(entry: newEntry)
         );
       });
     }
@@ -124,25 +118,6 @@ class HomePageState extends State<HomePage> {
             ),
           )
         ),
-
-      // body: CustomScrollView(
-      //   slivers: <Widget>[
-      //     SliverList(
-      //       delegate: SliverChildListDelegate(
-      //         <Widget>[
-      //           ..._foodList.isEmpty 
-      //             ? [Column(children:[
-      //                   SizedBox(height: size.height * 0.3), 
-      //                   const CustomText(label: "No entries yet.", 
-      //                               type: 'displaySmall',
-      //                             )]
-      //               )]
-      //             : _foodList,
-      //         ],
-      //       ),
-      //     ),
-      //   ],
-      // ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewEntry,
         tooltip: 'Add New Entry',
