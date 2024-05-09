@@ -106,24 +106,43 @@ class HomePageState extends State<HomePage> {
       //     ],
       //   ),
       // ),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildListDelegate(
-              <Widget>[
-                ..._foodList.isEmpty 
-                  ? [Column(children:[
-                        SizedBox(height: size.height * 0.3), 
-                        const CustomText(label: "No entries yet.", 
-                                    type: 'displaySmall',
-                                  )]
-                    )]
-                  : _foodList,
-              ],
+      body: _foodList.isEmpty ? 
+        const Center(
+          child: CustomText(label: "No entries yet.", 
+                        type: 'displaySmall',)
+          )
+        :
+        SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SizedBox(
+            height: size.height * 0.9, 
+            child: ListView.builder(
+              itemCount: _foodList.length,
+              itemBuilder: (context, index){
+                return _foodList[index];
+              }
             ),
-          ),
-        ],
-      ),
+          )
+        ),
+
+      // body: CustomScrollView(
+      //   slivers: <Widget>[
+      //     SliverList(
+      //       delegate: SliverChildListDelegate(
+      //         <Widget>[
+      //           ..._foodList.isEmpty 
+      //             ? [Column(children:[
+      //                   SizedBox(height: size.height * 0.3), 
+      //                   const CustomText(label: "No entries yet.", 
+      //                               type: 'displaySmall',
+      //                             )]
+      //               )]
+      //             : _foodList,
+      //         ],
+      //       ),
+      //     ),
+      //   ],
+      // ),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewEntry,
         tooltip: 'Add New Entry',
