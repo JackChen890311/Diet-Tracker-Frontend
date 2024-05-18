@@ -1,3 +1,5 @@
+import 'package:file_picker/file_picker.dart';
+// import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/entry.dart';
@@ -18,6 +20,77 @@ bool submitInputForm(formKey) {
     // return true;
 }
 
+// Ref 1: https://stackoverflow.com/questions/56252856/how-to-pick-files-and-images-for-upload-with-flutter-web
+// Ref 2: https://github.com/miguelpruivo/flutter_file_picker/issues/1131
+class FileUploadButton extends StatefulWidget {
+  const FileUploadButton({super.key});
+
+  @override
+  State<FileUploadButton> createState() => _FileUploadButtonState();
+}
+
+class _FileUploadButtonState extends State<FileUploadButton> {
+  List<String> filePaths = [];
+
+  @override
+  Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    return Row(children: [
+        ElevatedButton(
+          child: const Text('Upload Images'),
+          onPressed: () async {
+            filePaths.clear();
+            var picked = await FilePicker.platform.pickFiles(
+              allowMultiple: true, 
+              type: FileType.custom,
+              allowedExtensions: ['jpg', 'png']
+            );
+            if (picked != null) {
+              setState(() {
+                for (var file in picked.files) {
+                  print(file.name);
+                  filePaths.add(file.name);
+                }
+              });
+            }
+          },
+        ),
+        SizedBox(width: size.width * 0.025),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CustomText(label: filePaths.isNotEmpty ? filePaths[0] : ''),
+            CustomText(label: filePaths.isNotEmpty ? filePaths.length > 1 ? filePaths[1] : '' : 'No files selected'),
+            CustomText(label: filePaths.length == 3 ? filePaths[2] : filePaths.length > 2 ? '...' : ''),
+          ]
+        ),
+    ]);
+  }
+}
+
+// void handleUploadedFile(FilePickerResult? picked) {
+//   if (picked != null) {
+//     // Access the first picked file
+//     var file = picked.files.first;
+//     // Access the file name
+//     var fileName = file.name;
+//     // Access the file path
+//     var filePath = file.path;
+//     // Access the file bytes
+//     var fileBytes = file.bytes;
+//     // Access the file size
+//     var fileSize = file.size;
+
+//     // Do something with the uploaded file
+//     // For example, you can save it to a specific location or upload it to a server
+//     // ...
+//   } else {
+//     // No file was picked
+//     // Handle this case accordingly
+//     // ...
+//   }
+// }
+
 Future<dynamic> showAddEntryDialog(BuildContext context) {
     var size = MediaQuery.of(context).size;
     var date = '';
@@ -36,7 +109,7 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
             type: 'titleLarge', align: 'left',),
           content: SizedBox(
             width: size.width * 0.8,
-            height: size.height * 0.35,
+            height: size.height * 0.5,
             child: Column(
               children: [
                 Form(
@@ -148,6 +221,13 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
                               },
                             ),
                           ),
+                      ]),
+                      Row(children: [
+                        const Icon(Icons.image),
+                        SizedBox(width: size.width * 0.025, height: size.height * 0.1),
+                        SizedBox(width: size.width * 0.75, child: 
+                          const FileUploadButton(),
+                        ),
                       ]),
                     ],
                   ),
