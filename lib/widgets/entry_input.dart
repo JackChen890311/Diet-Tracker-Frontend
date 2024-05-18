@@ -1,5 +1,4 @@
 import 'package:file_picker/file_picker.dart';
-// import 'package:file_picker/_internal/file_picker_web.dart';
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/entry.dart';
@@ -23,14 +22,15 @@ bool submitInputForm(formKey) {
 // Ref 1: https://stackoverflow.com/questions/56252856/how-to-pick-files-and-images-for-upload-with-flutter-web
 // Ref 2: https://github.com/miguelpruivo/flutter_file_picker/issues/1131
 class FileUploadButton extends StatefulWidget {
-  const FileUploadButton({super.key});
+  FileUploadButton({super.key});
+  final List<String> _filePaths = [];
+  List<String> get filePath => _filePaths;
 
   @override
   State<FileUploadButton> createState() => _FileUploadButtonState();
 }
 
 class _FileUploadButtonState extends State<FileUploadButton> {
-  List<String> filePaths = [];
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class _FileUploadButtonState extends State<FileUploadButton> {
         ElevatedButton(
           child: const Text('Upload Images'),
           onPressed: () async {
-            filePaths.clear();
+            widget._filePaths.clear();
             var picked = await FilePicker.platform.pickFiles(
               allowMultiple: true, 
               type: FileType.custom,
@@ -48,8 +48,8 @@ class _FileUploadButtonState extends State<FileUploadButton> {
             if (picked != null) {
               setState(() {
                 for (var file in picked.files) {
-                  print(file.name);
-                  filePaths.add(file.name);
+                  // print(file.name);
+                  widget._filePaths.add(file.name);
                 }
               });
             }
@@ -59,9 +59,9 @@ class _FileUploadButtonState extends State<FileUploadButton> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomText(label: filePaths.isNotEmpty ? filePaths[0] : ''),
-            CustomText(label: filePaths.isNotEmpty ? filePaths.length > 1 ? filePaths[1] : '' : 'No files selected'),
-            CustomText(label: filePaths.length == 3 ? filePaths[2] : filePaths.length > 2 ? '...' : ''),
+            CustomText(label: widget._filePaths.isNotEmpty ? widget._filePaths[0] : ''),
+            CustomText(label: widget._filePaths.isNotEmpty ? widget._filePaths.length > 1 ? widget._filePaths[1] : '' : 'No files selected'),
+            CustomText(label: widget._filePaths.length == 3 ? widget._filePaths[2] : widget._filePaths.length > 2 ? '...' : ''),
           ]
         ),
     ]);
@@ -99,6 +99,7 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
     var price = '';
     var calories = '';
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    FileUploadButton fileUploadButton = FileUploadButton();
 
     return showDialog(
       context: context,
@@ -225,9 +226,7 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
                       Row(children: [
                         const Icon(Icons.image),
                         SizedBox(width: size.width * 0.025, height: size.height * 0.1),
-                        SizedBox(width: size.width * 0.75, child: 
-                          const FileUploadButton(),
-                        ),
+                        SizedBox(width: size.width * 0.75, child: fileUploadButton),
                       ]),
                     ],
                   ),
@@ -250,7 +249,9 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
                 if (check) {
                   Entry newEntry = Entry(
                     entryID: DateTime.now().millisecondsSinceEpoch,
-                    entryImage: 'assets/ramen.jpg',
+                    entryImage: fileUploadButton._filePaths.isEmpty ?
+                      'assets/food_empty.png' :
+                      'assets/${fileUploadButton._filePaths[0]}', // 'assets/ramen.jpg',
                     user: null, // TODO: add user
                     date: DateTime.parse(date),
                     foodName: foodname,

@@ -44,7 +44,7 @@ class HomePageState extends State<HomePage> {
     else{
       setState(() {
         _foodList.add(
-          EntryBlock(entry: newEntry)
+          EntryBlock(entry: newEntry, imgFirst: _foodList.length.isEven)
         );
       });
     }
@@ -108,14 +108,17 @@ class HomePageState extends State<HomePage> {
         :
         SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: SizedBox(
-            height: size.height * 0.9, 
-            child: ListView.builder(
-              itemCount: _foodList.length,
-              itemBuilder: (context, index){
-                return _foodList[index];
-              }
-            ),
+          child: Center(child: 
+            SizedBox(
+              height: size.height * 0.9,
+              width: size.width * 0.5,
+              child: ListView.builder(
+                itemCount: _foodList.length,
+                itemBuilder: (context, index){
+                  return _foodList[index];
+                }
+              ),
+            )
           )
         ),
       floatingActionButton: FloatingActionButton(

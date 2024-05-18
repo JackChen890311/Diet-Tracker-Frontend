@@ -7,9 +7,11 @@ class EntryBlock extends StatelessWidget {
   const EntryBlock({
     super.key,
     required this.entry,
+    this.imgFirst = false,
   });
 
   final Entry entry;
+  final bool imgFirst;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +27,9 @@ class EntryBlock extends StatelessWidget {
       height: size.height * 0.4,
       child: Card(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Image.asset(photo!),
+            imgFirst ? Image.asset(photo!) : const SizedBox(width: 0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -75,8 +78,9 @@ class EntryBlock extends StatelessWidget {
                 const SizedBox(width: 20),
                 CustomText(label: '$calories'),
               ]),
-          ],
-        ),
+              ],
+            ),
+            imgFirst ? const SizedBox(width: 0) : Image.asset(photo!),
       ]),
     ));
   }
