@@ -24,7 +24,41 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  final List<Widget> _foodList = [];
+  // final List<EntryBlock> _foodList = [];
+  final List<EntryBlock> _foodList = [
+    EntryBlock(entry: Entry(entryID: 1, entryImage: 'assets/ramen.jpg', user: null, foodName: 'ramen', restoName: 'ramen shop', date: DateTime.now(), price: 400, calories: 800), imgFirst: true),  
+    EntryBlock(entry: Entry(entryID: 2, entryImage: 'assets/chicken.jpg', user: null, foodName: 'chicken', restoName: 'chicken shop', date: DateTime.tryParse('2024-05-14'), price: 200, calories: 300), imgFirst: false),
+    EntryBlock(entry: Entry(entryID: 3, entryImage: 'assets/donut.jpg', user: null, foodName: 'donut', restoName: 'donut shop', date: DateTime.tryParse('2024-05-13'), price: 30, calories: 100), imgFirst: true),
+    EntryBlock(entry: Entry(entryID: 4, entryImage: 'assets/dog.jpg', user: null, foodName: 'dog', restoName: 'dog shop', date: DateTime.tryParse('2024-05-12'), price: 50, calories: 200), imgFirst: false),
+    EntryBlock(entry: Entry(entryID: 5, entryImage: 'assets/paella.jpg', user: null, foodName: 'paella', restoName: 'paella shop', date: DateTime.tryParse('2024-05-11'), price: 300, calories: 700), imgFirst: true),
+  ];
+
+  int calculateDifference(DateTime date) {
+    DateTime now = DateTime.now();
+    return DateTime(date.year, date.month, date.day).difference(DateTime(now.year, now.month, now.day)).inDays;
+  }
+
+  List<double> calculateTotal(){
+    double totalPrice = 0;
+    double totalCalories = 0;
+    for (var entryblock in _foodList){
+      totalPrice += entryblock.getEntry.price!;
+      totalCalories += entryblock.getEntry.calories!;
+    }
+    return [totalPrice, totalCalories];
+  }
+
+  List<double> calculateTotalToday(){
+    double totalPrice = 0;
+    double totalCalories = 0;
+    for (var entryblock in _foodList){
+      if (calculateDifference(entryblock.getEntry.date!) == 0){
+        totalPrice += entryblock.getEntry.price!;
+        totalCalories += entryblock.getEntry.calories!;
+      }
+    }
+    return [totalPrice, totalCalories];
+  }
 
   // void _incrementCounter() {
   //   setState(() {
@@ -59,6 +93,10 @@ class HomePageState extends State<HomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     var size = MediaQuery.of(context).size;
+    var total = calculateTotal();
+    var totalToday = calculateTotalToday();
+    var username = "Jack";
+
     return Scaffold(
       // appBar: AppBar(
       //   // TRY THIS: Try changing the color here to a specific color (to
@@ -100,27 +138,58 @@ class HomePageState extends State<HomePage> {
       //     ],
       //   ),
       // ),
-      body: _foodList.isEmpty ? 
-        const Center(
-          child: CustomText(label: "No entries yet.", 
-                        type: 'displaySmall',)
-          )
-        :
-        SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Center(child: 
-            SizedBox(
-              height: size.height * 0.9,
-              width: size.width * 0.5,
-              child: ListView.builder(
-                itemCount: _foodList.length,
-                itemBuilder: (context, index){
-                  return _foodList[index];
-                }
+      body: 
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children:[
+            SizedBox(height: size.height * 0.05),
+            CircleAvatar(
+              backgroundColor: Colors.black12,
+              radius: size.height * 0.12,
+              child: CircleAvatar(
+                backgroundImage:const AssetImage('assets/headshot.png'),
+                radius: size.height * 0.1,
               ),
-            )
-          )
+            ),
+            SizedBox(height: size.height * 0.05),
+            CustomText(label: "Welcome, $username!", type: 'displaySmall',),
+            const SizedBox(height: 50),
+            const CustomText(label: "Your Summaries", type: 'titleLarge',),
+            const SizedBox(height: 20),
+            CustomText(label: "Total Price: ${total[0]}", type: 'titleSmall',),
+            const SizedBox(height: 20),
+            CustomText(label: "Total Calories: ${total[1]}", type: 'titleSmall',),
+            const SizedBox(height: 20),
+            CustomText(label: "Total Price Today: ${totalToday[0]}", type: 'titleSmall',),
+            const SizedBox(height: 20),
+            CustomText(label: "Total Calories Today: ${totalToday[1]}", type: 'titleSmall',),
+          ],
         ),
+        _foodList.isEmpty ? 
+          const Center(
+            child: CustomText(label: "No entries yet.", 
+                          type: 'displaySmall',)
+            )
+          :
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Center(child: 
+              SizedBox(
+                height: size.height * 0.9,
+                width: size.width * 0.5,
+                child: ListView.builder(
+                  itemCount: _foodList.length,
+                  itemBuilder: (context, index){
+                    return _foodList[index];
+                  }
+                ),
+              )
+            )
+          ),
+      ],),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewEntry,
         tooltip: 'Add New Entry',

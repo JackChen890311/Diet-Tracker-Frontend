@@ -12,6 +12,7 @@ class EntryBlock extends StatelessWidget {
 
   final Entry entry;
   final bool imgFirst;
+  Entry get getEntry => entry;
 
   @override
   Widget build(BuildContext context) {
