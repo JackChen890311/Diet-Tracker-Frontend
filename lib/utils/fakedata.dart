@@ -33,4 +33,29 @@ List<PostBlock> addPostFromEntryList(List<EntryBlock> foodList){
 
 final List<PostBlock> postList = addPostFromEntryList(foodList);
 
+Map<DateTime, int> sumPriceByDate(List<EntryBlock> foodList){
+  Map<DateTime, int> priceByDate = {};
+  for (var entry in foodList){
+    if (priceByDate.containsKey(entry.getEntry.date)){
+      priceByDate[entry.getEntry.date!] = priceByDate[entry.getEntry.date]! + entry.getEntry.price!;
+    } else {
+      priceByDate[entry.getEntry.date!] = entry.getEntry.price!;
+    }
+  }
+  return priceByDate;
+}
 
+Map<DateTime, int> sumCaloriesByDate(List<EntryBlock> foodList){
+  Map<DateTime, int> caloriesByDate = {};
+  for (var entry in foodList){
+    if (caloriesByDate.containsKey(entry.getEntry.date)){
+      caloriesByDate[entry.getEntry.date!] = caloriesByDate[entry.getEntry.date]! + entry.getEntry.calories!;
+    } else {
+      caloriesByDate[entry.getEntry.date!] = entry.getEntry.calories!;
+    }
+  }
+  return caloriesByDate;
+}
+
+Map<DateTime, int> priceByDate = sumPriceByDate(foodList);
+Map<DateTime, int> caloriesByDate = sumCaloriesByDate(foodList);
