@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/widgets/app_bar.dart';
 import 'package:diet_tracker/utils/style.dart';
-import 'package:diet_tracker/utils/post.dart';
-import 'package:diet_tracker/utils/entry.dart';
 import 'package:diet_tracker/utils/user.dart';
 import 'package:diet_tracker/widgets/post_card.dart';
+import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
 // import 'package:flutter/cupertino.dart';
 // import 'package:diet_tracker/widgets/people_card.dart';
 // import 'package:flutter/widgets.dart';
@@ -25,74 +24,8 @@ class _AccountPageState extends State<AccountPage> {
   //     _counter++;
   //   });
   // }
-
-  final List<Widget> _postList = [
-    PostBlock(post: 
-      Post(postID: 1, 
-        user:
-          User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack'), 
-        entry: 
-          Entry(entryID: 1, entryImage: 'assets/ramen.jpg', user: null, 
-            foodName: 'ramen', restoName: 'ramen shop', date: DateTime.now(), 
-            price: 400, calories: 800),
-        description: 'This is a bowl of ramen.',
-        like: [], likeCnt: 0,
-        comment: [], commentCnt: 0,
-      )
-    ),
-    PostBlock(post: 
-      Post(postID: 3, 
-        user:
-          User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack'), 
-        entry: 
-          Entry(entryID: 1, entryImage: 'assets/chicken.jpg', user: null, 
-            foodName: 'chicken', restoName: 'chicken shop', date: DateTime.now(), 
-            price: 400, calories: 800),
-        description: 'This is a chicken.',
-        like: [], likeCnt: 0,
-        comment: [], commentCnt: 0,
-      )
-    ),
-    PostBlock(post: 
-      Post(postID: 4, 
-        user:
-          User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack'), 
-        entry: 
-          Entry(entryID: 1, entryImage: 'assets/paella.jpg', user: null, 
-            foodName: 'paella', restoName: 'paella shop', date: DateTime.now(), 
-            price: 400, calories: 800),
-        description: 'This is a paella.',
-        like: [], likeCnt: 0,
-        comment: [], commentCnt: 0,
-      )
-    ),
-    PostBlock(post: 
-      Post(postID: 5, 
-        user:
-          User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack'), 
-        entry: 
-          Entry(entryID: 1, entryImage: 'assets/dog.jpg', user: null, 
-            foodName: 'dog', restoName: 'dog shop', date: DateTime.now(), 
-            price: 400, calories: 800),
-        description: 'This is a dog.',
-        like: [], likeCnt: 0,
-        comment: [], commentCnt: 0,
-      )
-    ),
-    PostBlock(post: 
-      Post(postID: 2, 
-        user:
-          User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack'), 
-        entry: 
-          Entry(entryID: 1, entryImage: 'assets/donut.jpg', user: null, 
-            foodName: 'donut', restoName: 'donut shop', date: DateTime.now(), 
-            price: 400, calories: 800),
-        description: 'This is a donut.',
-        like: [], likeCnt: 0,
-        comment: [], commentCnt: 0,
-      )
-    ),
-  ];
+  final List<PostBlock> _postList = fakedata.postList;
+  final User _user = fakedata.userJack;
 
   @override
   Widget build(BuildContext context) {
@@ -132,13 +65,13 @@ class _AccountPageState extends State<AccountPage> {
                               backgroundColor: Colors.black12,
                               radius: size.height * 0.12,
                               child: CircleAvatar(
-                                backgroundImage:const AssetImage('assets/headshot.png'),
+                                backgroundImage: AssetImage(_user.userImg!),
                                 radius: size.height * 0.1,
                               ),
                             ),
                             SizedBox(width: size.width*0.005),
-                            const Text("Jack",
-                              style: TextStyle(
+                            Text(_user.userName,
+                              style: const TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 2.0,
@@ -156,19 +89,19 @@ class _AccountPageState extends State<AccountPage> {
                         Row(
                           children: [
                             SizedBox(width: size.width*0.04),
-                            const Column(
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "2",
-                                  style: TextStyle(
+                                  '${_user.postCnt!}',
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight:FontWeight.bold,
                                     fontSize: 16,
                                   ),
                                 ),
-                                SizedBox(height: 5),
-                                Text(
+                                const SizedBox(height: 5),
+                                const Text(
                                   "Posts",
                                   style: TextStyle(
                                     color: Colors.grey,
@@ -179,19 +112,19 @@ class _AccountPageState extends State<AccountPage> {
                               ],
                             ),
                             SizedBox(width: size.width*0.025),
-                            const Column(
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "10",
-                                  style: TextStyle(
+                                  '${_user.likeCnt!}',
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight:FontWeight.bold,
                                     fontSize: 16,
                                   ),
                                 ),
-                                SizedBox(height: 5),
-                                Text(
+                                const SizedBox(height: 5),
+                                const Text(
                                   "Likes",
                                   style: TextStyle(
                                     color: Colors.grey,
@@ -202,20 +135,20 @@ class _AccountPageState extends State<AccountPage> {
                               ],
                             ),
                             SizedBox(width: size.width*0.025),
-                            const Column(
+                            Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  "1200",
-                                  style: TextStyle(
+                                  '${_user.entryCnt!}',
+                                  style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight:FontWeight.bold,
                                     fontSize: 16,
                                   ),
                                 ),
-                                SizedBox(height: 5),
-                                Text(
-                                  "Calories",
+                                const SizedBox(height: 5),
+                                const Text(
+                                  "Entries",
                                   style: TextStyle(
                                     color: Colors.grey,
                                     fontWeight:FontWeight.normal,
@@ -241,7 +174,7 @@ class _AccountPageState extends State<AccountPage> {
               flex: 2,
               child:_postList.isEmpty ? 
                 const Center(
-                  child: CustomText(label: "No entries yet.", 
+                  child: CustomText(label: "No posts yet.", 
                                 type: 'displaySmall',)
                   ):
                 SingleChildScrollView(

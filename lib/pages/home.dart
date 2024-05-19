@@ -4,6 +4,7 @@ import 'package:diet_tracker/widgets/food_card.dart';
 import 'package:diet_tracker/widgets/entry_input.dart';
 import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/entry.dart';
+import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,13 +26,14 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   // final List<EntryBlock> _foodList = [];
-  final List<EntryBlock> _foodList = [
-    EntryBlock(entry: Entry(entryID: 1, entryImage: 'assets/ramen.jpg', user: null, foodName: 'ramen', restoName: 'ramen shop', date: DateTime.now(), price: 400, calories: 800), imgFirst: true),  
-    EntryBlock(entry: Entry(entryID: 2, entryImage: 'assets/chicken.jpg', user: null, foodName: 'chicken', restoName: 'chicken shop', date: DateTime.tryParse('2024-05-14'), price: 200, calories: 300), imgFirst: false),
-    EntryBlock(entry: Entry(entryID: 3, entryImage: 'assets/donut.jpg', user: null, foodName: 'donut', restoName: 'donut shop', date: DateTime.tryParse('2024-05-13'), price: 30, calories: 100), imgFirst: true),
-    EntryBlock(entry: Entry(entryID: 4, entryImage: 'assets/dog.jpg', user: null, foodName: 'dog', restoName: 'dog shop', date: DateTime.tryParse('2024-05-12'), price: 50, calories: 200), imgFirst: false),
-    EntryBlock(entry: Entry(entryID: 5, entryImage: 'assets/paella.jpg', user: null, foodName: 'paella', restoName: 'paella shop', date: DateTime.tryParse('2024-05-11'), price: 300, calories: 700), imgFirst: true),
-  ];
+  final List<EntryBlock> _foodList = fakedata.foodList;
+  // final List<EntryBlock> _foodList = [
+  //   EntryBlock(entry: Entry(entryID: 1, entryImage: 'assets/ramen.jpg', user: null, foodName: 'ramen', restoName: 'ramen shop', date: DateTime.now(), price: 400, calories: 800), imgFirst: true),  
+  //   EntryBlock(entry: Entry(entryID: 2, entryImage: 'assets/chicken.jpg', user: null, foodName: 'chicken', restoName: 'chicken shop', date: DateTime.tryParse('2024-05-14'), price: 200, calories: 300), imgFirst: false),
+  //   EntryBlock(entry: Entry(entryID: 3, entryImage: 'assets/donut.jpg', user: null, foodName: 'donut', restoName: 'donut shop', date: DateTime.tryParse('2024-05-13'), price: 30, calories: 100), imgFirst: true),
+  //   EntryBlock(entry: Entry(entryID: 4, entryImage: 'assets/dog.jpg', user: null, foodName: 'dog', restoName: 'dog shop', date: DateTime.tryParse('2024-05-12'), price: 50, calories: 200), imgFirst: false),
+  //   EntryBlock(entry: Entry(entryID: 5, entryImage: 'assets/paella.jpg', user: null, foodName: 'paella', restoName: 'paella shop', date: DateTime.tryParse('2024-05-11'), price: 300, calories: 700), imgFirst: true),
+  // ];
 
   int calculateDifference(DateTime date) {
     DateTime now = DateTime.now();
