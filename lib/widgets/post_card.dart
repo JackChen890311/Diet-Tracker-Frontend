@@ -1,3 +1,6 @@
+import 'dart:html';
+
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/utils/style.dart';
@@ -5,21 +8,56 @@ import 'package:diet_tracker/utils/post.dart';
 import 'package:diet_tracker/utils/user.dart';
 import 'package:diet_tracker/utils/entry.dart';
 
-class PostBlock extends StatelessWidget {
+// TODO: get global user data
+final User globalUser = User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack', userImg: 'assets/headshot.png', gender: 1, postCnt: 0, entryCnt: 0, likeCnt: 0);
+
+class PostBlock extends StatefulWidget {
   const PostBlock({
     super.key,
     required this.post,
   });
 
   final Post post;
-  Post get getPost => post;
-  User get getUser => post.user;
-  Entry get getEntry => post.entry;
+
+  @override
+  State<PostBlock> createState() => _PostBlockState();
+}
+
+class _PostBlockState extends State<PostBlock> {
+  Post get getPost => widget.post;
+
+  User get getUser => widget.post.user;
+
+  Entry get getEntry => widget.post.entry;
+
+  late List<User> likeList;
+  late int likeCnt;
+  late String _comment;
+  late List<dynamic> comment;
+  late int commentCnt;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final commentController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    likeList = widget.post.like!;
+    likeCnt = widget.post.likeCnt!;
+    comment = widget.post.comment!;
+    commentCnt = widget.post.commentCnt!;
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    
     var size = MediaQuery.of(context).size;
-    var entry = post.entry;
+    var entry = widget.post.entry;
 
     var photo = entry.entryImage;
     var date = DateFormat('yyyy-MM-dd').format(entry.date!);
@@ -27,54 +65,109 @@ class PostBlock extends StatelessWidget {
     var restoName = entry.restoName;
     var price = entry.price;
     var calories = entry.calories;
+    var userImg = entry.user!.userImg;
+    var userGender = entry.user!.gender;
+    var isLiked = likeList.contains(globalUser);
+    if(comment.isEmpty){
+      comment = [];
+    }
+    
 
     return SizedBox(
-      height: size.height * 0.9,
+      // height: size.height * 0.9,
       child: Card(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.black12,
-                  radius: size.height * 0.04,
-                  child: CircleAvatar(
-                    backgroundImage:const AssetImage('assets/headshot.png'),
-                    radius: size.height * 0.1,
-                  ),
-                ),
-                const Icon(Icons.account_circle),
-                CustomText(label: getUser.account),
-                const Icon(Icons.calendar_today),
-                CustomText(label: date),
-                const Icon(Icons.fastfood),
-                CustomText(label: foodname!),
-                const Icon(Icons.location_on),
-                CustomText(label: '$restoName'),
-                const Icon(Icons.attach_money),
-                CustomText(label: '$price'),
-                const Icon(Icons.local_fire_department),
-                CustomText(label: '$calories'),
-            ]),
-            SizedBox(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 12, 8, 12),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.black12,
+                        radius: size.height * 0.04,
+                        child: CircleAvatar(
+                          backgroundImage:userImg==null? userGender==0? const AssetImage('assets/headshot_female.jpg'):const AssetImage('assets/headshot_male.jpg'): AssetImage(userImg),
+                          radius: size.height * 0.1,
+                        ),
+                      ),
+                    ),
+                    Text(entry.user!.userName, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5, fontSize: 16)),
+                ]),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Padding(
+                      padding:  EdgeInsets.all(8.0),
+                      child:  Icon(Icons.calendar_today),
+                    ),
+                    CustomText(label: date),
+                    SizedBox(width: size.width*0.01),
+                    const Padding(
+                      padding:  EdgeInsets.all(8.0),
+                      child:  Icon(Icons.fastfood),
+                    ),
+                    CustomText(label: foodname!),
+                    SizedBox(width: size.width*0.01),
+                    const Padding(
+                      padding:  EdgeInsets.all(8.0),
+                      child:  Icon(Icons.location_on),
+                    ),
+                    CustomText(label: '$restoName'),
+                    SizedBox(width: size.width*0.01),
+                    const Padding(
+                      padding:  EdgeInsets.all(8.0),
+                      child:  Icon(Icons.attach_money),
+                    ),
+                    CustomText(label: '$price'),
+                    SizedBox(width: size.width*0.01),
+                    const Padding(
+                      padding:  EdgeInsets.all(8.0),
+                      child:  Icon(Icons.local_fire_department),
+                    ),
+                    CustomText(label: '$calories'),
+                    SizedBox(width: size.width*0.01),
+                  ],
+                ) 
+              ],
+            ),
+            Container(
+              color: Colors.white,
               height: size.height * 0.5,
-              child: Image.asset(photo!, fit: BoxFit.cover),
+              child: Center(child: Image.asset(photo!, fit: BoxFit.cover),),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(height: size.height * 0.1, width: size.width * 0.1),
+                SizedBox(width: size.width * 0.04),
                 IconButton(
-                  icon: const Icon(Icons.favorite),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  icon: isLiked? Icon(Icons.favorite, color:Colors.red[300]): const Icon(Icons.favorite),
                   onPressed: () {
-                    // Add your favorite button logic here
+                    setState(() {
+                      isLiked = !isLiked;
+                      if(isLiked){
+                        likeList.add(globalUser);
+                        likeCnt += 1;
+                      }
+                      else{
+                        likeList.remove(globalUser);
+                        likeCnt -= 1;
+                      }
+                      // TODO: update "like" and "likeCnt" of Post in DB
+                    });
                     print('heart');
                   },
                 ),
                 SizedBox(width: size.width * 0.02),
-                CustomText(label: post.likeCnt.toString()),
+                CustomText(label: likeCnt.toString()),
                 SizedBox(width: size.width * 0.02),
                 IconButton(
                   icon: const Icon(Icons.comment),
@@ -84,11 +177,89 @@ class PostBlock extends StatelessWidget {
                   },
                 ),
                 SizedBox(width: size.width * 0.02),
-                CustomText(label: post.commentCnt.toString()),
-            ],),
-            CustomText(label: post.description),
-            SizedBox(height: size.height * 0.05),
-      ]),
+                CustomText(label: commentCnt.toString()),
+              ],
+            ),
+            Divider(indent: size.width * 0.02, endIndent: size.width * 0.02, height: 0),
+            SizedBox(height: size.height * 0.02),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                SizedBox(width: size.width * 0.04),
+                RichText(text: TextSpan(
+                  children: [
+                    TextSpan(text: '${entry.user!.userName}    ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    TextSpan(text: widget.post.description)
+                  ])
+                ),
+              ],
+            ),
+            Column(
+              children: comment.map((e) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(width: size.width * 0.04),
+                      RichText(text: TextSpan(
+                        children: [
+                          TextSpan(text: '${e[0].userName}    ', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black54)),
+                          TextSpan(text: e[1].toString(), style: const TextStyle(color: Colors.black54))
+                        ])
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+            SizedBox(height: size.height * 0.02),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.04),
+              child: Form(
+                key: _formKey,
+                child: TextFormField(
+                  controller: commentController,
+                  decoration: InputDecoration(
+                    hintStyle: const TextStyle(fontSize: 14),
+                    hintText: 'Add a comment...',
+                    focusedBorder:
+                        UnderlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context)
+                              .primaryColor,
+                          width: 1.0),
+                    )
+                  ),
+                  validator: (String? value) {
+                    if (value!.isEmpty) {
+                      return 'please enter something';
+                    }
+                    return null;
+                  },
+                  onSaved: (String? value) {
+                    _comment = value!;
+                  },
+                  onFieldSubmitted: (value) {
+                    if (_formKey.currentState!.validate()) {
+                      _formKey.currentState!.save();
+                      // print(_comment);
+                      setState(() {
+                        commentController.clear();
+                        commentCnt += 1;
+                        List data = [];
+                        data.add(globalUser);
+                        data.add(_comment);
+                        comment.add(data);
+                        // TODO: write into DB & update Post in DB
+                      });
+                    }
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: size.height * 0.02),
+        ]),
     ));
   }
 }

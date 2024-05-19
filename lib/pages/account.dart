@@ -170,6 +170,7 @@ class _AccountPageState extends State<AccountPage> {
                 ]
               ),
             ),
+            // SizedBox(width: size.width*0.01),
             Expanded(
               flex: 2,
               child:_postList.isEmpty ? 
