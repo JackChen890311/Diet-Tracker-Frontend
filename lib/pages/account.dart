@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/widgets/app_bar.dart';
 import 'package:diet_tracker/utils/style.dart';
+import 'package:diet_tracker/utils/post.dart';
+import 'package:diet_tracker/utils/entry.dart';
+import 'package:diet_tracker/utils/user.dart';
 import 'package:diet_tracker/widgets/post_card.dart';
 // import 'package:flutter/cupertino.dart';
 // import 'package:diet_tracker/widgets/people_card.dart';
@@ -24,12 +27,71 @@ class _AccountPageState extends State<AccountPage> {
   // }
 
   final List<Widget> _postList = [
-    const PostBlock(photo: 'assets/ramen.jpg', foodname: "ramen1", date: "2024-05-01"),
-    const PostBlock(photo: 'assets/ramen.jpg', foodname: "ramen2", date: "2024-05-01"),
-    const PostBlock(photo: 'assets/ramen.jpg', foodname: "ramen3", date: "2024-05-01"),
-    const PostBlock(photo: 'assets/ramen.jpg', foodname: "ramen4", date: "2024-05-01"),
-    const PostBlock(photo: 'assets/ramen.jpg', foodname: "ramen5", date: "2024-05-01"),
-    const PostBlock(photo: 'assets/ramen.jpg', foodname: "ramen6", date: "2024-05-01"),
+    PostBlock(post: 
+      Post(postID: 1, 
+        user:
+          User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack'), 
+        entry: 
+          Entry(entryID: 1, entryImage: 'assets/ramen.jpg', user: null, 
+            foodName: 'ramen', restoName: 'ramen shop', date: DateTime.now(), 
+            price: 400, calories: 800),
+        description: 'This is a bowl of ramen.',
+        like: [], likeCnt: 0,
+        comment: [], commentCnt: 0,
+      )
+    ),
+    PostBlock(post: 
+      Post(postID: 3, 
+        user:
+          User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack'), 
+        entry: 
+          Entry(entryID: 1, entryImage: 'assets/chicken.jpg', user: null, 
+            foodName: 'chicken', restoName: 'chicken shop', date: DateTime.now(), 
+            price: 400, calories: 800),
+        description: 'This is a chicken.',
+        like: [], likeCnt: 0,
+        comment: [], commentCnt: 0,
+      )
+    ),
+    PostBlock(post: 
+      Post(postID: 4, 
+        user:
+          User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack'), 
+        entry: 
+          Entry(entryID: 1, entryImage: 'assets/paella.jpg', user: null, 
+            foodName: 'paella', restoName: 'paella shop', date: DateTime.now(), 
+            price: 400, calories: 800),
+        description: 'This is a paella.',
+        like: [], likeCnt: 0,
+        comment: [], commentCnt: 0,
+      )
+    ),
+    PostBlock(post: 
+      Post(postID: 5, 
+        user:
+          User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack'), 
+        entry: 
+          Entry(entryID: 1, entryImage: 'assets/dog.jpg', user: null, 
+            foodName: 'dog', restoName: 'dog shop', date: DateTime.now(), 
+            price: 400, calories: 800),
+        description: 'This is a dog.',
+        like: [], likeCnt: 0,
+        comment: [], commentCnt: 0,
+      )
+    ),
+    PostBlock(post: 
+      Post(postID: 2, 
+        user:
+          User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack'), 
+        entry: 
+          Entry(entryID: 1, entryImage: 'assets/donut.jpg', user: null, 
+            foodName: 'donut', restoName: 'donut shop', date: DateTime.now(), 
+            price: 400, calories: 800),
+        description: 'This is a donut.',
+        like: [], likeCnt: 0,
+        comment: [], commentCnt: 0,
+      )
+    ),
   ];
 
   @override
