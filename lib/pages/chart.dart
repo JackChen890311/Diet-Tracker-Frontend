@@ -63,6 +63,7 @@ class _ChartPageState extends State<ChartPage> {
               Align(
                 alignment: Alignment.bottomLeft, 
                 child: FloatingActionButton(
+                  heroTag: "prev",
                   shape: const CircleBorder(),
                   onPressed: () => _changeMonth(-1),
                   tooltip: 'Previous Month',
@@ -73,6 +74,7 @@ class _ChartPageState extends State<ChartPage> {
               Align(
                 alignment: Alignment.bottomRight,
                 child: FloatingActionButton(
+                  heroTag: "next",
                   shape: const CircleBorder(),
                   onPressed: () => _changeMonth(1),
                   tooltip: 'Next Month',

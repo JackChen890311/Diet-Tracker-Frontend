@@ -1,7 +1,9 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/utils/style.dart';
+import 'package:diet_tracker/utils/user.dart';
 import 'package:diet_tracker/utils/entry.dart';
+import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
 
 bool submitInputForm(formKey) {
     if (!formKey.currentState!.validate()) {
@@ -238,7 +240,8 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
             TextButton(
               child: const CustomText(label: 'Cancel'),
               onPressed: () {
-                Entry emptyEntry = Entry(entryID: 0);
+                User emptyUser = User(account: '', userName: '', email: '', password: '');
+                Entry emptyEntry = Entry(entryID: 0, user: emptyUser);
                 Navigator.pop(context, emptyEntry);
               },
             ),
@@ -252,7 +255,7 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
                     entryImage: fileUploadButton._filePaths.isEmpty ?
                       'assets/food_empty.png' :
                       'assets/${fileUploadButton._filePaths[0]}', // 'assets/ramen.jpg',
-                    user: null, // TODO: add user
+                    user: fakedata.userJack, // TODO: change to current user
                     date: DateTime.parse(date),
                     foodName: foodname,
                     restoName: restoName,

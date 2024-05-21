@@ -17,7 +17,7 @@ class Entry {
 
   final int entryID;
   final String? entryImage;
-  final User? user;
+  final User user;
   final String? foodName;
   final String? restoName;
   final DateTime? date;
@@ -27,7 +27,7 @@ class Entry {
   Entry(
       {required this.entryID,
       this.entryImage,
-      this.user,
+      required this.user,
       this.foodName,
       this.restoName,
       this.date,
@@ -48,7 +48,7 @@ class Entry {
   Map<String, dynamic> toJson() => {
         '_id': entryID,
         'entryImage': entryImage,
-        'user': user!.toJson(),
+        'user': user.toJson(),
         'foodName': foodName,
         'restoName': restoName,
         'date': date!.toIso8601String(),

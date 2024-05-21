@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/entry.dart';
+import 'package:diet_tracker/utils/user.dart';
 
 class EntryBlock extends StatelessWidget {
   const EntryBlock({
@@ -13,6 +14,7 @@ class EntryBlock extends StatelessWidget {
   final Entry entry;
   final bool imgFirst;
   Entry get getEntry => entry;
+  User get getUser => entry.user!;
 
   @override
   Widget build(BuildContext context) {

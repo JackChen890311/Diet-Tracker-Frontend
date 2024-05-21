@@ -26,8 +26,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  // final List<EntryBlock> _foodList = [];
-  final List<EntryBlock> _foodList = fakedata.foodList;
+  // final List<EntryBlock> _entryList = [];
+  final List<EntryBlock> _entryList = fakedata.entryList;
 
   int calculateDifference(DateTime date) {
     DateTime now = DateTime.now();
@@ -37,7 +37,7 @@ class HomePageState extends State<HomePage> {
   List<double> calculateTotal(){
     double totalPrice = 0;
     double totalCalories = 0;
-    for (var entryblock in _foodList){
+    for (var entryblock in _entryList){
       totalPrice += entryblock.getEntry.price!;
       totalCalories += entryblock.getEntry.calories!;
     }
@@ -47,7 +47,7 @@ class HomePageState extends State<HomePage> {
   List<double> calculateTotalToday(){
     double totalPrice = 0;
     double totalCalories = 0;
-    for (var entryblock in _foodList){
+    for (var entryblock in _entryList){
       if (calculateDifference(entryblock.getEntry.date!) == 0){
         totalPrice += entryblock.getEntry.price!;
         totalCalories += entryblock.getEntry.calories!;
@@ -78,10 +78,10 @@ class HomePageState extends State<HomePage> {
     }
     else{
       setState(() {
-        _foodList.add(
-          EntryBlock(entry: newEntry, imgFirst: _foodList.length.isEven)
+        _entryList.add(
+          EntryBlock(entry: newEntry, imgFirst: _entryList.length.isEven)
         );
-        _foodList.sort(sortComparisonByDate);
+        _entryList.sort(sortComparisonByDate);
       });
     }
   }
@@ -97,7 +97,7 @@ class HomePageState extends State<HomePage> {
     var size = MediaQuery.of(context).size;
     var total = calculateTotal();
     var totalToday = calculateTotalToday();
-    _foodList.sort(sortComparisonByDate);
+    _entryList.sort(sortComparisonByDate);
     var username = "Jack";
     // ApiService api = ApiService();
     // api.hello();
@@ -173,7 +173,7 @@ class HomePageState extends State<HomePage> {
             CustomText(label: "Total Calories Today: ${totalToday[1]}", type: 'titleSmall',),
           ],
         ),
-        _foodList.isEmpty ? 
+        _entryList.isEmpty ? 
           const Center(
             child: CustomText(label: "No entries yet.", 
                           type: 'displaySmall',)
@@ -186,9 +186,9 @@ class HomePageState extends State<HomePage> {
                 height: size.height * 0.9,
                 width: size.width * 0.5,
                 child: ListView.builder(
-                  itemCount: _foodList.length,
+                  itemCount: _entryList.length,
                   itemBuilder: (context, index){
-                    return _foodList[index];
+                    return _entryList[index];
                   }
                 ),
               )

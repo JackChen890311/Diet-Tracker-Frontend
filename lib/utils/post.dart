@@ -19,7 +19,7 @@ class Post {
   final int postID;
   final User user;
   final Entry entry;
-  final String description;
+  final String? description;
   final List<User>? like;
   final int? likeCnt;
   final List<dynamic>? comment;
@@ -29,7 +29,7 @@ class Post {
       {required this.postID,
       required this.user,
       required this.entry,
-      required this.description,
+      this.description,
       this.like,
       this.likeCnt,
       this.comment,
