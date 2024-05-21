@@ -9,20 +9,25 @@ final User userJack = User(account: 'jack', email: 'jack@gmail.com', password: '
 final User userIrene = User(account: 'irene', email: 'irene@gmail.com', password: '1234', userName: 'Irene', gender: 0, postCnt: 0, entryCnt: 0, likeCnt: 0);
 final User userAndy = User(account: 'andy', email: 'andy@gmail.com', password: '1234', userName: 'Andy', gender: 1, postCnt: 0, entryCnt: 0, likeCnt: 0);
 
-final List<EntryBlock> foodList = [
-  EntryBlock(entry: Entry(entryID: 1, entryImage: 'assets/ramen.jpg', user: userIrene, foodName: 'ramen', restoName: 'ramen shop', date: DateTime.now(), price: 400, calories: 800), imgFirst: true),  
+final List<EntryBlock> foodListJack = [
+  EntryBlock(entry: Entry(entryID: 1, entryImage: 'assets/ramen.jpg', user: userJack, foodName: 'ramen', restoName: 'ramen shop', date: DateTime.now(), price: 400, calories: 800), imgFirst: true),  
   EntryBlock(entry: Entry(entryID: 2, entryImage: 'assets/chicken.jpg', user: userJack, foodName: 'chicken', restoName: 'chicken shop', date: DateTime.tryParse('2024-05-14'), price: 200, calories: 300), imgFirst: false),
-  EntryBlock(entry: Entry(entryID: 3, entryImage: 'assets/donut.jpg', user: userAndy, foodName: 'donut', restoName: 'donut shop', date: DateTime.tryParse('2024-05-13'), price: 30, calories: 100), imgFirst: true),
-  EntryBlock(entry: Entry(entryID: 4, entryImage: 'assets/dog.jpg', user: userAndy, foodName: 'dog', restoName: 'dog shop', date: DateTime.tryParse('2024-05-12'), price: 50, calories: 200), imgFirst: false),
-  EntryBlock(entry: Entry(entryID: 5, entryImage: 'assets/paella.jpg', user: userJack, foodName: 'paella', restoName: 'paella shop', date: DateTime.tryParse('2024-05-11'), price: 300, calories: 700), imgFirst: true),
+  EntryBlock(entry: Entry(entryID: 3, entryImage: 'assets/donut.jpg', user: userJack, foodName: 'donut', restoName: 'donut shop', date: DateTime.tryParse('2024-05-13'), price: 30, calories: 100), imgFirst: true),
 ];
 
-List<PostBlock> addPostFromEntryList(List<EntryBlock> foodList){
+final List<EntryBlock> foodListIrene = [
+  EntryBlock(entry: Entry(entryID: 4, entryImage: 'assets/dog.jpg', user: userIrene, foodName: 'dog', restoName: 'dog shop', date: DateTime.tryParse('2024-05-12'), price: 50, calories: 200), imgFirst: false),
+  EntryBlock(entry: Entry(entryID: 5, entryImage: 'assets/paella.jpg', user: userIrene, foodName: 'paella', restoName: 'paella shop', date: DateTime.tryParse('2024-05-11'), price: 300, calories: 700), imgFirst: true),
+];
+
+final List<EntryBlock> foodList = foodListJack; // Only post from jack, since we login as jack
+
+List<PostBlock> addPostFromEntryList(List<EntryBlock> foodList, User user){
   List<PostBlock> postList = [];
   for (var food in foodList){
     postList.add(PostBlock(post:
       Post(postID: food.getEntry.entryID, 
-        user: userJack, 
+        user: user, 
         entry: food.getEntry,
         description: 'This is a bowl of ${food.getEntry.foodName}.',
         like: [], likeCnt: 0,
@@ -33,7 +38,9 @@ List<PostBlock> addPostFromEntryList(List<EntryBlock> foodList){
   return postList;
 }
 
-final List<PostBlock> postList = addPostFromEntryList(foodList);
+final List<PostBlock> postListJack = addPostFromEntryList(foodListJack, userJack);
+final List<PostBlock> postListIrene = addPostFromEntryList(foodListIrene, userIrene);
+final List<PostBlock> postList = postListJack + postListIrene; // All post from all users
 
 Map<DateTime, int> sumPriceByDate(List<EntryBlock> foodList){
   Map<DateTime, int> priceByDate = {};
