@@ -19,8 +19,8 @@ class PostBlock extends StatefulWidget {
   final Post post;
 
   Post get getPost => post;
-  User get getUser => post.user!;
-  Entry get getEntry => post.entry!;
+  User get getUser => post.user;
+  Entry get getEntry => post.entry;
 
   @override
   State<PostBlock> createState() => _PostBlockState();
@@ -58,7 +58,7 @@ class _PostBlockState extends State<PostBlock> {
   Widget build(BuildContext context) {
     
     var size = MediaQuery.of(context).size;
-    var entry = widget.post.entry!;
+    var entry = widget.post.entry;
 
     var photo = entry.entryImage;
     var date = DateFormat('yyyy-MM-dd').format(entry.date!);
@@ -66,8 +66,8 @@ class _PostBlockState extends State<PostBlock> {
     var restoName = entry.restoName;
     var price = entry.price;
     var calories = entry.calories;
-    var userImg = entry.user!.userImg;
-    var userGender = entry.user!.gender;
+    var userImg = entry.user.userImg;
+    var userGender = entry.user.gender;
     var isLiked = likeList.contains(globalUser);
     if(comment.isEmpty){
       comment = [];
@@ -99,7 +99,7 @@ class _PostBlockState extends State<PostBlock> {
                         ),
                       ),
                     ),
-                    Text(entry.user!.userName, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5, fontSize: 16)),
+                    Text(entry.user.userName, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.5, fontSize: 16)),
                 ]),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -189,7 +189,7 @@ class _PostBlockState extends State<PostBlock> {
                 SizedBox(width: size.width * 0.04),
                 RichText(text: TextSpan(
                   children: [
-                    TextSpan(text: '${entry.user!.userName}    ', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    TextSpan(text: '${entry.user.userName}    ', style: const TextStyle(fontWeight: FontWeight.bold)),
                     TextSpan(text: widget.post.description)
                   ])
                 ),

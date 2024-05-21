@@ -14,7 +14,7 @@ class EntryBlock extends StatelessWidget {
   final Entry entry;
   final bool imgFirst;
   Entry get getEntry => entry;
-  User get getUser => entry.user!;
+  User get getUser => entry.user;
 
   @override
   Widget build(BuildContext context) {

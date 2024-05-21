@@ -49,6 +49,7 @@ class MyApp extends StatelessWidget {
           case '/chart':
             return pageTransition(settings, const ChartPage());
         }
+        return null;
       }
     );
   }
