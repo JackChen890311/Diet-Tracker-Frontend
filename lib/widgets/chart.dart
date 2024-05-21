@@ -3,6 +3,7 @@ import 'package:diet_tracker/utils/style.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
 
+// Ref: https://github.com/imaNNeo/fl_chart/blob/main/repo_files/documentations/line_chart.md
 FlTitlesData get getTitlesData => const FlTitlesData(
     rightTitles: AxisTitles(
       sideTitles: SideTitles(showTitles: false),
@@ -13,7 +14,7 @@ FlTitlesData get getTitlesData => const FlTitlesData(
 
     bottomTitles: AxisTitles(
       axisNameSize: 20,
-      axisNameWidget: CustomText(label: 'Days'),
+      axisNameWidget: CustomText(label: 'Date'),
       sideTitles: SideTitles(
         showTitles: true,
         interval: 1,
@@ -31,15 +32,6 @@ FlTitlesData get getTitlesData => const FlTitlesData(
     )
   );
 
-
-// List<FlSpot> getSpots(List<int> values) {
-//   List<FlSpot> spots = [];
-//   for (int i = 0; i < values.length; i++) {
-//     spots.add(FlSpot(i.toDouble() + 1, values[i].toDouble()));
-//   }
-//   return spots;
-// }
-
 List<FlSpot> getSpotsFromXY(List<int> x, List<int> y) {
   List<FlSpot> spots = [];
   for (int i = 0; i < x.length; i++) {
@@ -49,66 +41,91 @@ List<FlSpot> getSpotsFromXY(List<int> x, List<int> y) {
 }
 
 class MyLineChart extends StatefulWidget{
-  const MyLineChart({super.key});
+  const MyLineChart({super.key, required this.yearid, required this.monthid});
+  final int monthid;
+  final int yearid;
 
   @override
   State<MyLineChart> createState() => _MyLineChartState();
 }
 
 class _MyLineChartState extends State<MyLineChart> {
-  // List<FlSpot> spots1 = getSpots([100, 700, 300, 600, 500]);
-  // List<FlSpot> spots2 = getSpots([500, 800, 500, 400, 100]);
-  List<DateTime> date = fakedata.priceByDate.keys.toList();
-  List<int> priceint = fakedata.priceByDate.values.toList();
-  List<int> caloriesint = fakedata.caloriesByDate.values.toList();
-  
+  // TODO: real data 
+  // bool showPrice = true;
+  // bool showCalories = true;
+  Map<DateTime, int> priceByDate = fakedata.priceByDate;
+  Map<DateTime, int> caloriesByDate = fakedata.caloriesByDate;
+  List<int> dateint = List.generate(31, (i) => i+1);
+
+  List<int> generateValue(int yearid, int monthid, List<int> keyDate, Map<DateTime, int>valueByDate){
+    List<int> valueint = [];
+    for (var d in keyDate){
+      if (valueByDate.containsKey(DateTime(yearid, monthid, d))){
+        valueint.add(valueByDate[DateTime(yearid, monthid, d)]!);
+      }
+      else{
+        valueint.add(0);
+      }
+    }
+    return valueint;
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<int> dateint = date.map((date) => date.day).toList();
-    
-    double minXpos = dateint.reduce((value, element) => value < element ? value : element).toDouble();
-    double maxXpos = dateint.reduce((value, element) => value > element ? value : element).toDouble();
-    double minYpos1 = priceint.reduce((value, element) => value < element ? value : element).toDouble() / 1.5;
-    double maxYpos1 = priceint.reduce((value, element) => value > element ? value : element).toDouble() * 1.5;
-    double minYpos2 = caloriesint.reduce((value, element) => value < element ? value : element).toDouble() / 1.5;
-    double maxYpos2 = caloriesint.reduce((value, element) => value > element ? value : element).toDouble() * 1.5;
-    double minYpos = (minYpos1 < minYpos2) ? minYpos1 : minYpos2;
+    List<int> priceint = generateValue(widget.yearid, widget.monthid, dateint, priceByDate);
+    List<int> caloriesint = generateValue(widget.yearid, widget.monthid, dateint, caloriesByDate);
+
+    double maxYpos1 = priceint.reduce((value, element) => value > element ? value : element).toDouble() + 100;
+    double maxYpos2 = caloriesint.reduce((value, element) => value > element ? value : element).toDouble() + 100;
     double maxYpos = (maxYpos1 > maxYpos2) ? maxYpos1 : maxYpos2;
 
-    List<FlSpot> spots1 = getSpotsFromXY(dateint, priceint);
-    List<FlSpot> spots2 = getSpotsFromXY(dateint, caloriesint);
-
-    // print(dateint);
-    // print(priceint);
-    // print(caloriesint);
-    // print(minXpos);
-    // print(maxXpos);
-    // print(minYpos);
-    // print(maxYpos);
+    List<FlSpot> priceSpot = getSpotsFromXY(dateint, priceint);
+    List<FlSpot> caloriesSpot = getSpotsFromXY(dateint, caloriesint);
 
     return LineChart(
       LineChartData(
-        minX: minXpos,
-        maxX: maxXpos,
-        minY: minYpos,
+        minX: 1,
+        maxX: 31,
+        minY: 0,
         maxY: maxYpos,
         gridData: const FlGridData(show: false),
         titlesData: getTitlesData,
         lineBarsData: [
           LineChartBarData( 
-            spots: spots1,
-            isCurved: true,
+            // show: showPrice,
+            spots: priceSpot,
             color: CustomColor.darkBlue,
             barWidth: 3,
           ),
           LineChartBarData(
-            spots: spots2,
-            isCurved: true,
+            // show: showCalories,
+            spots: caloriesSpot,
             color: CustomColor.darkRed,
             barWidth: 3,
           ),
-        ]
+        ],
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipColor: (LineBarSpot _) => CustomColor.grey,
+            getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                                  bool first = false;
+                                  return touchedBarSpots.map((barSpot) {
+                                    if (first) {
+                                      first = false;
+                                      return LineTooltipItem(
+                                        'Price: ${barSpot.y}', const TextStyle(fontWeight: FontWeight.bold, color: CustomColor.darkBlue)
+                                      );
+                                    }
+                                    else{
+                                      first = true;
+                                      return LineTooltipItem(
+                                          'Calories: ${barSpot.y}', const TextStyle(fontWeight: FontWeight.bold, color: CustomColor.darkRed)
+                                      );
+                                    }
+                                  }).toList();
+                                },
+          )
+        ),
       )
     );
   }

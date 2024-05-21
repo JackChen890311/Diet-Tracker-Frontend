@@ -13,6 +13,9 @@ final List<EntryBlock> foodListJack = [
   EntryBlock(entry: Entry(entryID: 1, entryImage: 'assets/ramen.jpg', user: userJack, foodName: 'ramen', restoName: 'ramen shop', date: DateTime.now(), price: 400, calories: 800), imgFirst: true),  
   EntryBlock(entry: Entry(entryID: 2, entryImage: 'assets/chicken.jpg', user: userJack, foodName: 'chicken', restoName: 'chicken shop', date: DateTime.tryParse('2024-05-14'), price: 200, calories: 300), imgFirst: false),
   EntryBlock(entry: Entry(entryID: 3, entryImage: 'assets/donut.jpg', user: userJack, foodName: 'donut', restoName: 'donut shop', date: DateTime.tryParse('2024-05-13'), price: 30, calories: 100), imgFirst: true),
+  EntryBlock(entry: Entry(entryID: 11, entryImage: 'assets/ramen.jpg', user: userJack, foodName: 'ramen', restoName: 'ramen shop', date: DateTime.tryParse('2024-04-15'), price: 400, calories: 800), imgFirst: true),  
+  EntryBlock(entry: Entry(entryID: 12, entryImage: 'assets/chicken.jpg', user: userJack, foodName: 'chicken', restoName: 'chicken shop', date: DateTime.tryParse('2024-04-14'), price: 200, calories: 300), imgFirst: false),
+  EntryBlock(entry: Entry(entryID: 13, entryImage: 'assets/donut.jpg', user: userJack, foodName: 'donut', restoName: 'donut shop', date: DateTime.tryParse('2024-04-13'), price: 30, calories: 100), imgFirst: true),
 ];
 
 final List<EntryBlock> foodListIrene = [

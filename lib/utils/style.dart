@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class CustomColor {
   static const Color white = Colors.white;
   static const Color black = Colors.black;
+  static const Color grey = Color.fromARGB(255, 228, 228, 228);
   static const Color darkBlue = Color(0xff0D4A71);
   static const Color lightBlue = Colors.blue;
+  static const Color lighterBlue = Colors.lightBlue;
   static const Color darkRed = Color(0xffB71C1C);
   static const Color lightRed = Colors.red;
 }
