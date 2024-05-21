@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:diet_tracker/widgets/app_bar.dart';
 import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/user.dart';
+import 'package:diet_tracker/utils/post.dart';
 import 'package:diet_tracker/widgets/post_card.dart';
+import 'package:diet_tracker/widgets/post_input.dart';
 import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
 // import 'package:flutter/cupertino.dart';
 // import 'package:diet_tracker/widgets/people_card.dart';
@@ -17,19 +19,32 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  // int _counter = 0;
 
-  // void _incrementCounter() {
-  //   setState(() {
-  //     _counter++;
-  //   });
-  // }
+  int sortComparisonByDate(PostBlock a, PostBlock b){
+    return -a.getEntry.date!.compareTo(b.getEntry.date!);
+  }
   final List<PostBlock> _postList = fakedata.postList;
   final User _user = fakedata.userJack;
 
+  void _addNewPost () async {
+    Post newPost = await showAddPostDialog(context);
+    if (newPost.postID == 0) {
+      return;
+    }
+    else{
+      setState(() {
+        _postList.add(
+          PostBlock(post: newPost)
+        );
+        _postList.sort(sortComparisonByDate);
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    _postList.sort(sortComparisonByDate);
+    
     return Scaffold(
       appBar: const MyAppBar(title: 'Account'),
       body: Center(
@@ -170,7 +185,6 @@ class _AccountPageState extends State<AccountPage> {
                 ]
               ),
             ),
-            // SizedBox(width: size.width*0.01),
             Expanded(
               flex: 2,
               child:_postList.isEmpty ? 
@@ -194,11 +208,11 @@ class _AccountPageState extends State<AccountPage> {
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: _incrementCounter,
-      //   tooltip: 'Increment',
-      //   child: const Icon(Icons.add),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addNewPost,
+        tooltip: 'Add New Post',
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }

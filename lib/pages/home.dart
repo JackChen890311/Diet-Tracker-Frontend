@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/widgets/app_bar.dart';
-import 'package:diet_tracker/widgets/food_card.dart';
+import 'package:diet_tracker/widgets/entry_card.dart';
 import 'package:diet_tracker/widgets/entry_input.dart';
 import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/entry.dart';
 import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
+import 'package:diet_tracker/services/api.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -55,6 +56,11 @@ class HomePageState extends State<HomePage> {
     return [totalPrice, totalCalories];
   }
 
+  int sortComparisonByDate(EntryBlock a, EntryBlock b){
+    return -a.entry.date!.compareTo(b.entry.date!);
+  }
+
+  // int _counter = 0;
   // void _incrementCounter() {
   //   setState(() {
   //     // This call to setState tells the Flutter framework that something has
@@ -75,6 +81,7 @@ class HomePageState extends State<HomePage> {
         _foodList.add(
           EntryBlock(entry: newEntry, imgFirst: _foodList.length.isEven)
         );
+        _foodList.sort(sortComparisonByDate);
       });
     }
   }
@@ -90,7 +97,10 @@ class HomePageState extends State<HomePage> {
     var size = MediaQuery.of(context).size;
     var total = calculateTotal();
     var totalToday = calculateTotalToday();
+    _foodList.sort(sortComparisonByDate);
     var username = "Jack";
+    // ApiService api = ApiService();
+    // api.hello();
 
     return Scaffold(
       // appBar: AppBar(
@@ -135,7 +145,7 @@ class HomePageState extends State<HomePage> {
       // ),
       body: 
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
         Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -184,6 +194,12 @@ class HomePageState extends State<HomePage> {
               )
             )
           ),
+        // Column(
+        //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+        //   children: [
+        //     Image.asset('assets/images/illustration-3.png', height: size.height * 0.5),
+        //   ],
+        // )
       ],),
       floatingActionButton: FloatingActionButton(
         onPressed: _addNewEntry,

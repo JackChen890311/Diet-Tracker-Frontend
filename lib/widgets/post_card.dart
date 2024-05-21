@@ -19,16 +19,18 @@ class PostBlock extends StatefulWidget {
 
   final Post post;
 
+  Post get getPost => post;
+  User get getUser => post.user;
+  Entry get getEntry => post.entry;
+
   @override
   State<PostBlock> createState() => _PostBlockState();
 }
 
 class _PostBlockState extends State<PostBlock> {
-  Post get getPost => widget.post;
-
-  User get getUser => widget.post.user;
-
-  Entry get getEntry => widget.post.entry;
+  // Post get getPost => widget.post;
+  // User get getUser => widget.post.user;
+  // Entry get getEntry => widget.post.entry;
 
   late List<User> likeList;
   late int likeCnt;

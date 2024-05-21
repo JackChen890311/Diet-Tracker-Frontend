@@ -1,7 +1,7 @@
 import 'package:diet_tracker/utils/post.dart';
 import 'package:diet_tracker/utils/entry.dart';
 import 'package:diet_tracker/utils/user.dart';
-import 'package:diet_tracker/widgets/food_card.dart';
+import 'package:diet_tracker/widgets/entry_card.dart';
 import 'package:diet_tracker/widgets/post_card.dart';
 
 
