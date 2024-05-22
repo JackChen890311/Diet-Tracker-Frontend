@@ -99,8 +99,16 @@ class HomePageState extends State<HomePage> {
     var totalToday = calculateTotalToday();
     _entryList.sort(sortComparisonByDate);
     var username = "Jack";
-    // ApiService api = ApiService();
-    // api.hello();
+
+    // Test ApiService
+    // Future<void> testAPI() async{
+    //   final result = await ApiService().hello();
+    //   // final result = await ApiService().createFakeUser();
+    //   // final result = await ApiService().loginFakeUser('jack', '1234');
+    //   print(result);
+    // }
+    // testAPI();
+    // print('continue');
 
     return Scaffold(
       // appBar: AppBar(
