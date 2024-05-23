@@ -6,6 +6,8 @@ import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/entry.dart';
 import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
 import 'package:diet_tracker/services/api.dart';
+import 'package:diet_tracker/services/global_service.dart';
+import 'package:diet_tracker/utils/user.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -98,7 +100,14 @@ class HomePageState extends State<HomePage> {
     var total = calculateTotal();
     var totalToday = calculateTotalToday();
     _entryList.sort(sortComparisonByDate);
-    var username = "Jack";
+    
+    final _global = GlobalService();
+    final User _user = _global.getUserData;
+    var decodedJson = _user.toJson();
+    var userImg = decodedJson['userImg'];
+    var userGender = decodedJson['gender'];
+    var username = decodedJson['userName'];
+    // var username = "Jack";
 
     // Test ApiService
     // Future<void> testAPI() async{
@@ -163,7 +172,7 @@ class HomePageState extends State<HomePage> {
               backgroundColor: Colors.black12,
               radius: size.height * 0.12,
               child: CircleAvatar(
-                backgroundImage:const AssetImage('assets/headshot.png'),
+                backgroundImage: userImg==null? userGender==0? const AssetImage('assets/headshot_female.jpg'):const AssetImage('assets/headshot_male.jpg'): AssetImage(userImg),
                 radius: size.height * 0.1,
               ),
             ),

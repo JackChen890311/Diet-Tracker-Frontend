@@ -6,6 +6,8 @@ import 'package:diet_tracker/utils/post.dart';
 import 'package:diet_tracker/widgets/post_card.dart';
 import 'package:diet_tracker/widgets/post_input.dart';
 import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
+import 'package:diet_tracker/services/global_service.dart';
+
 // import 'package:flutter/cupertino.dart';
 // import 'package:diet_tracker/widgets/people_card.dart';
 // import 'package:flutter/widgets.dart';
@@ -24,7 +26,6 @@ class _AccountPageState extends State<AccountPage> {
     return -a.getEntry.date!.compareTo(b.getEntry.date!);
   }
   final List<PostBlock> _postList = fakedata.postList;
-  final User _user = fakedata.userJack;
 
   void _addNewPost () async {
     Post newPost = await showAddPostDialog(context);
@@ -44,6 +45,8 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     _postList.sort(sortComparisonByDate);
+    final _global = GlobalService();
+    final user = _global.getUserData;
     
     return Scaffold(
       appBar: const MyAppBar(title: 'Account'),
@@ -80,12 +83,12 @@ class _AccountPageState extends State<AccountPage> {
                               backgroundColor: Colors.black12,
                               radius: size.height * 0.12,
                               child: CircleAvatar(
-                                backgroundImage: AssetImage(_user.userImg!),
+                                backgroundImage: user.userImg==null? user.gender==0? const AssetImage('assets/headshot_female.jpg'):const AssetImage('assets/headshot_male.jpg'): AssetImage(user.userImg!),
                                 radius: size.height * 0.1,
                               ),
                             ),
                             SizedBox(width: size.width*0.005),
-                            Text(_user.userName,
+                            Text(user.userName,
                               style: const TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.bold,
@@ -108,7 +111,7 @@ class _AccountPageState extends State<AccountPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  '${_user.postCnt!}',
+                                  '${user.postCnt!}',
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight:FontWeight.bold,
@@ -131,7 +134,7 @@ class _AccountPageState extends State<AccountPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  '${_user.likeCnt!}',
+                                  '${user.likeCnt!}',
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight:FontWeight.bold,
@@ -154,7 +157,7 @@ class _AccountPageState extends State<AccountPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
-                                  '${_user.entryCnt!}',
+                                  '${user.entryCnt!}',
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight:FontWeight.bold,

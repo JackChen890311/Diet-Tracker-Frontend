@@ -6,9 +6,10 @@ import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/post.dart';
 import 'package:diet_tracker/utils/user.dart';
 import 'package:diet_tracker/utils/entry.dart';
+import 'package:diet_tracker/services/global_service.dart';
 
-// TODO: get global user data
-final User globalUser = User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack', userImg: 'assets/headshot.png', gender: 1, postCnt: 0, entryCnt: 0, likeCnt: 0);
+final _global = GlobalService();
+final globalUser = _global.getUserData;
 
 class PostBlock extends StatefulWidget {
   const PostBlock({
@@ -38,10 +39,11 @@ class _PostBlockState extends State<PostBlock> {
   late int commentCnt;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final commentController = TextEditingController();
+  
 
   @override
   void initState() {
-    super.initState();
+    super.initState();    
     likeList = widget.post.like!;
     likeCnt = widget.post.likeCnt!;
     comment = widget.post.comment!;

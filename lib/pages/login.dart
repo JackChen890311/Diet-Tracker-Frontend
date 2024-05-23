@@ -1,7 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:email_validator/email_validator.dart';
-
+import 'package:diet_tracker/utils/user.dart';
+import 'package:diet_tracker/services/api.dart';
+import 'package:select_form_field/select_form_field.dart';
+import 'package:diet_tracker/utils/style.dart';
+import 'package:diet_tracker/widgets/button.dart';
+import 'package:diet_tracker/widgets/dialog.dart';
+import 'dart:convert';
+import 'package:diet_tracker/services/global_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,25 +23,42 @@ class _LoginPageState extends State<LoginPage> {
 
   late String _account;
   late String _password;
-  late String _registerEmail;
+  // late String _registerEmail;
   late String _registerUsername;
   late String _registerPassword;
   late String _registerPasswordConfirmation;
+  late String _registerAccount;
   late bool _isSignIn;
+  late int _registerGender;
+  // late String _registerUserImg;
   bool _isObscured=true;
   bool _isObscuredCheck=true;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
+
+  final List<Map<String, dynamic>> genderList = [
+    {
+      'value': 1,
+      'label': '男',
+    },
+    {
+      'value': 0,
+      'label': '女',
+    },
+  ];
 
   @override 
   void initState() {
     super.initState();
     _account = '';
     _password = '';
-    _registerEmail = '';
+    // _registerEmail = '';
     _registerUsername = '';
+    _registerAccount = '';
     _registerPassword = '';
+    // _registerUserImg = '';
     _registerPasswordConfirmation = '';
+    _registerGender = -1;
     _isSignIn = true;
   }
 
@@ -127,23 +153,135 @@ class _LoginPageState extends State<LoginPage> {
     }
 
   Future<void> submitLoginForm(context) async {
+    // await ApiService().deleteUser('andy');
+    // await ApiService().createFakeUser();
     if (!_formKey.currentState!.validate()) {
-      print('The form is invalid.');
+      print('The login form is invalid.');
       return;
     }
-    print('The form is valid!');
-    Navigator.pushNamed(context, '/home');
+    print('The login form is valid!');
+    _formKey.currentState?.save();  // At this time, onSave is activated to store corresponding values into variables
+    
+    var response1 = await ApiService().login(_account, _password);
+    if(response1['statusCode']==200){
+      var response2 = await ApiService().getUser(_account);
+      final _global = GlobalService();
+      var json = jsonDecode(response2['body']);
+      var user = User.fromJson(json);
+      _global.setUserData = user;
+      Navigator.pushNamed(context, '/home');
+    }
+    else{
+      await showDialog(
+              context: context,
+              builder:(context) {
+                var content = [
+                  CustomText(
+                      label: '帳號 或 密碼輸入錯誤',
+                      color: Theme.of(context).primaryColorDark,
+                      type: 'desc'),
+                  const SizedBox(height: 20),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CustomOutlinedButton(
+                            text: 'ＯＫ',
+                            borderColor: Theme.of(context).primaryColor,
+                            onClick: () => {Navigator.pop(context, false)}),
+                        const SizedBox(width: 20),
+                      ]),
+                ];
+                return CustomDialog(title: '登入失敗', content: content);
+              }
+          );
+    }
   }
 
   Future<void> submitRegisterForm(context) async {
     if (!_registerFormKey.currentState!.validate()) {
-      print('The form is invalid.');
+      print('The register form is invalid.');
       return;
     }
-    print('The form is valid!');
-    Navigator.pushNamed(context, '/login');
-  }
+    print('The register form is valid!');
+    _registerFormKey.currentState?.save();  // At this time, onSave is activated to store corresponding values into variables
+    // if(_registerUserImg==''){
+    //   if(_registerGender==0){
+    //     _registerUserImg = 'assets/headshot_female.jpg';
+    //   }
+    //   else{
+    //     _registerUserImg = 'assets/headshot_male.jpg';
+    //   }
+    // }
+    final newUser = User(
+      account: _registerAccount, 
+      // email: _registerEmail, 
+      password: _registerPassword, 
+      userName: _registerUsername,
+      gender: _registerGender,
+      // userImg: _registerUserImg,
+      postCnt: 0,
+      entryCnt: 0,
+      likeCnt: 0,
+    );
+    var response = await ApiService().register(newUser);
+    if(response['statusCode']==201){
+      await showDialog(
+      context: context,
+      builder:(context) {
+        var content = [
+          CustomText(
+              label: '註冊成功，請至登入頁面登入帳號。',
+              color: Theme.of(context).primaryColorDark,
+              type: 'desc'),
+          const SizedBox(height: 20),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CustomOutlinedButton(
+                    text: 'ＯＫ',
+                    borderColor: Theme.of(context).primaryColor,
+                    onClick: () => {Navigator.pop(context, false)}),
+                const SizedBox(width: 20),
+              ]),
+        ];
+        return CustomDialog(title: '註冊成功', content: content);
+      });
+      Navigator.pushNamed(context, '/login');
+    }
+    else{ 
+      String message = jsonDecode(response['body'])['message'];
+      if(response['statusCode']==409){
+        message = '帳號已存在，請嘗試登入，或更換不同帳號名稱。';
+      }
+      await showDialog(
+              context: context,
+              builder:(context) {
+                var content = [
+                  CustomText(
+                      label: message,
+                      color: Theme.of(context).primaryColorDark,
+                      type: 'desc'),
+                  const SizedBox(height: 20),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CustomOutlinedButton(
+                            text: 'ＯＫ',
+                            borderColor: Theme.of(context).primaryColor,
+                            onClick: () => {Navigator.pop(context, false)}),
+                        const SizedBox(width: 20),
+                      ]),
+                ];
+                return CustomDialog(title: '註冊失敗', content: content);
+              }
+          );
+      _isSignIn = false;
+    }
 
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,8 +302,8 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     _menuItem(title: 'Home'),
                     _menuItem(title: 'About us'),
-                    _menuItem(title: 'Contact us'),
-                    _menuItem(title: 'Help'),
+                    // _menuItem(title: 'Contact us'),
+                    // _menuItem(title: 'Help'),
                   ],
                 ),
                 Row(
@@ -193,7 +331,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 25),
                     const Text(
-                      'Sign in to\nDiet Tracker',
+                      'Sign in \nDiet Tracker',
                       style: TextStyle(
                         fontSize: 45,
                         fontWeight: FontWeight.bold,
@@ -387,9 +525,39 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
+                        SelectFormField(
+                          decoration: InputDecoration(
+                            hintText: 'Choose a gender',
+                            filled: true,
+                            fillColor: Colors.blueGrey[50],
+                            labelStyle: const TextStyle(fontSize: 12),
+                            contentPadding: const EdgeInsets.only(left: 30),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          type: SelectFormFieldType
+                              .dropdown,
+                          items: genderList,
+                          validator: (String? value) {
+                            if (value!.isEmpty) {
+                              return '請選擇一個性別';
+                            }
+                            return null;
+                          },
+                          onSaved: (String? value) {
+                            _registerGender = int.parse(value!);
+                          },
+                        ),
+                        const SizedBox(height: 15),
                         TextFormField(
                           decoration: InputDecoration(
-                            hintText: 'Enter username',
+                            hintText: 'Enter account',
                             filled: true,
                             fillColor: Colors.blueGrey[50],
                             labelStyle: const TextStyle(fontSize: 12),
@@ -405,7 +573,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           validator:(value) {
                             if(value!.isEmpty){
-                              return '請輸入使用者名稱';
+                              return '請輸入帳號';
                             }
                             if (value.contains(' ')) {
                               return '請勿包含空白格';
@@ -413,43 +581,10 @@ class _LoginPageState extends State<LoginPage> {
                             return null;
                           },
                           onSaved: (newValue) {
-                            _registerUsername = newValue!.trim();
+                            _registerAccount = newValue!.trim();
                           },
                         ),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                          decoration: InputDecoration(
-                            hintText: 'Enter email',
-                            filled: true,
-                            fillColor: Colors.blueGrey[50],
-                            labelStyle: const TextStyle(fontSize: 12),
-                            contentPadding: const EdgeInsets.only(left: 30),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          validator:(value) {
-                            if(value!.isEmpty){
-                              return '請輸入信箱';
-                            }
-                            if (value.isNotEmpty && !EmailValidator.validate(value)){
-                              return '請輸入正確信箱格式';
-                            }
-                            if (value.contains(' ')) {
-                              return '請勿包含空白格';
-                            }
-                            return null;
-                          },
-                          onSaved: (newValue) {
-                            _registerEmail = newValue!.trim();
-                          },
-                        ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 15),
                         TextFormField(
                           obscureText: _isObscured,
                           decoration: InputDecoration(
@@ -491,7 +626,7 @@ class _LoginPageState extends State<LoginPage> {
                             _registerPassword = newValue!.trim();
                           },
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 15),
                         TextFormField(
                           obscureText: _isObscuredCheck,
                           decoration: InputDecoration(
@@ -532,7 +667,71 @@ class _LoginPageState extends State<LoginPage> {
                             _registerPasswordConfirmation = newValue!.trim();
                           },
                         ),
-                        const SizedBox(height: 40),
+                        const SizedBox(height: 15),
+                        // TextFormField(
+                        //   decoration: InputDecoration(
+                        //     hintText: 'Enter email',
+                        //     filled: true,
+                        //     fillColor: Colors.blueGrey[50],
+                        //     labelStyle: const TextStyle(fontSize: 12),
+                        //     contentPadding: const EdgeInsets.only(left: 30),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                        //       borderRadius: BorderRadius.circular(15),
+                        //     ),
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                        //       borderRadius: BorderRadius.circular(15),
+                        //     ),
+                        //   ),
+                        //   validator:(value) {
+                        //     if(value!.isEmpty){
+                        //       return '請輸入信箱';
+                        //     }
+                        //     if (value.isNotEmpty && !EmailValidator.validate(value)){
+                        //       return '請輸入正確信箱格式';
+                        //     }
+                        //     if (value.contains(' ')) {
+                        //       return '請勿包含空白格';
+                        //     }
+                        //     return null;
+                        //   },
+                        //   onSaved: (newValue) {
+                        //     _registerEmail = newValue!.trim();
+                        //   },
+                        // ),
+                        // const SizedBox(height: 15),
+                        TextFormField(
+                          decoration: InputDecoration(
+                            hintText: 'Enter username',
+                            filled: true,
+                            fillColor: Colors.blueGrey[50],
+                            labelStyle: const TextStyle(fontSize: 12),
+                            contentPadding: const EdgeInsets.only(left: 30),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueGrey.shade50),
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                          ),
+                          validator:(value) {
+                            if(value!.isEmpty){
+                              return '請輸入使用者名稱';
+                            }
+                            if (value.contains(' ')) {
+                              return '請勿包含空白格';
+                            }
+                            return null;
+                          },
+                          onSaved: (newValue) {
+                            _registerUsername = newValue!.trim();
+                          },
+                        ),
+                        const SizedBox(height: 30),
+                        
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -548,6 +747,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: ElevatedButton(
                             onPressed: (){
                               submitRegisterForm(context);
+                              // submit(context);
                             },
                             style: ElevatedButton.styleFrom(
                               foregroundColor: Colors.deepPurple,

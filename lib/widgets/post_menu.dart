@@ -123,7 +123,7 @@ class _PostDialogState extends State<PostDialog> {
         TextButton(
           child: const CustomText(label: 'Cancel'),
           onPressed: () {
-            User emptyUser = User(account: '', userName: '', email: '', password: '');
+            User emptyUser = User(account: '', userName: '', /*email: '',*/ password: '');
             Entry emptyEntry = Entry(entryID: 0, user: emptyUser);
             Post emptyPost = Post(postID: 0, user: emptyUser, entry: emptyEntry);
             Navigator.pop(context, emptyPost);

@@ -240,7 +240,7 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
             TextButton(
               child: const CustomText(label: 'Cancel'),
               onPressed: () {
-                User emptyUser = User(account: '', userName: '', email: '', password: '');
+                User emptyUser = User(account: '', userName: '', /*email: '',*/ password: '');
                 Entry emptyEntry = Entry(entryID: 0, user: emptyUser);
                 Navigator.pop(context, emptyEntry);
               },

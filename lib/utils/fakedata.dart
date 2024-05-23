@@ -5,9 +5,9 @@ import 'package:diet_tracker/widgets/entry_card.dart';
 import 'package:diet_tracker/widgets/post_card.dart';
 
 
-final User userJack = User(account: 'jack', email: 'jack@gmail.com', password: '1234', userName: 'Jack', userImg: 'assets/headshot.png', gender: 1, postCnt: 0, entryCnt: 0, likeCnt: 0);
-final User userIrene = User(account: 'irene', email: 'irene@gmail.com', password: '1234', userName: 'Irene', gender: 0, postCnt: 0, entryCnt: 0, likeCnt: 0);
-final User userAndy = User(account: 'andy', email: 'andy@gmail.com', password: '1234', userName: 'Andy', gender: 1, postCnt: 0, entryCnt: 0, likeCnt: 0);
+final User userJack = User(account: 'jack', /*email: 'jack@gmail.com',*/ password: '1234', userName: 'Jack', userImg: 'assets/headshot.png', gender: 1, postCnt: 0, entryCnt: 0, likeCnt: 0);
+final User userIrene = User(account: 'irene', /*email: 'irene@gmail.com',*/ password: '1234', userName: 'Irene', gender: 0, postCnt: 0, entryCnt: 0, likeCnt: 0);
+final User userAndy = User(account: 'andy', /*email: 'andy@gmail.com',*/ password: '1234', userName: 'Andy', gender: 1, postCnt: 0, entryCnt: 0, likeCnt: 0);
 
 final List<EntryBlock> entryListJack = [
   EntryBlock(entry: Entry(entryID: 1, entryImage: 'assets/ramen.jpg', user: userJack, foodName: 'ramen', restoName: 'ramen shop', date: DateTime.now(), price: 400, calories: 800), imgFirst: true),  

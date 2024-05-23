@@ -16,7 +16,7 @@ class User {
   // * likeCnt: int
 
   final String account;
-  final String email;
+  // final String email;
   final String password;
   final String userName;
   final String? userImg;
@@ -27,7 +27,7 @@ class User {
 
   User(
       {required this.account,
-      required this.email,
+      // required this.email,
       required this.password,
       required this.userName,
       this.userImg,
@@ -38,7 +38,7 @@ class User {
       
   factory User.fromJson(Map<String, dynamic> json) => User(
         account: json['account'],
-        email: json['email'],
+        // email: json['email'],
         password: json['password'],
         userName: json['userName'],
         userImg: json['userImg'],
@@ -50,7 +50,7 @@ class User {
 
   Map<String, dynamic> toJson() => {
         'account': account,
-        'email': email,
+        // 'email': email,
         'password': password,
         'userName': userName,
         'userImg': userImg,
@@ -59,4 +59,5 @@ class User {
         'entryCnt': entryCnt,
         'likeCnt': likeCnt,
       };
+
 }
