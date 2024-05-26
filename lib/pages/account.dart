@@ -45,8 +45,8 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     _postList.sort(sortComparisonByDate);
-    final _global = GlobalService();
-    final user = _global.getUserData;
+    final global = GlobalService();
+    final user = global.getUserData;
     
     return Scaffold(
       appBar: const MyAppBar(title: 'Account'),

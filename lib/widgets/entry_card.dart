@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/entry.dart';
 import 'package:diet_tracker/utils/user.dart';
+import 'package:diet_tracker/utils/image.dart';
 
 class EntryBlock extends StatelessWidget {
   const EntryBlock({
@@ -32,7 +33,7 @@ class EntryBlock extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            imgFirst ? Image.asset(photo!) : const SizedBox(width: 0),
+            imgFirst ? (photo!.isEmpty ? Image.asset('assets/food_empty.png') : imageFromBase64String(photo)) : const SizedBox(width: 0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -83,7 +84,8 @@ class EntryBlock extends StatelessWidget {
               ]),
               ],
             ),
-            imgFirst ? const SizedBox(width: 0) : Image.asset(photo!),
+            imgFirst ? const SizedBox(width: 0) : (photo!.isEmpty ? Image.asset('assets/food_empty.png') : imageFromBase64String(photo)),
+
       ]),
     ));
   }

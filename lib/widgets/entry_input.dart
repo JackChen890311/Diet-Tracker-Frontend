@@ -3,7 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/user.dart';
 import 'package:diet_tracker/utils/entry.dart';
-import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
+import 'package:diet_tracker/utils/image.dart';
+import 'package:diet_tracker/services/global_service.dart';
+
+
+Future<dynamic> showAddEntryDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return const EntryDialog();
+      },);
+}
+
 
 bool submitInputForm(formKey) {
     if (!formKey.currentState!.validate()) {
@@ -21,92 +32,33 @@ bool submitInputForm(formKey) {
     // return true;
 }
 
-// Ref 1: https://stackoverflow.com/questions/56252856/how-to-pick-files-and-images-for-upload-with-flutter-web
-// Ref 2: https://github.com/miguelpruivo/flutter_file_picker/issues/1131
-class FileUploadButton extends StatefulWidget {
-  FileUploadButton({super.key});
-  final List<String> _filePaths = [];
-  List<String> get filePath => _filePaths;
+
+class EntryDialog extends StatefulWidget {
+  const EntryDialog({super.key});
+  // final List<EntryBlock> entryList;
 
   @override
-  State<FileUploadButton> createState() => _FileUploadButtonState();
+  State<EntryDialog> createState() => _EntryDialogState();
 }
 
-class _FileUploadButtonState extends State<FileUploadButton> {
+class _EntryDialogState extends State<EntryDialog> {
+  // Ref: https://stackoverflow.com/questions/52125575/setstate-clears-the-data-in-form-element-data-flutter
+  var date = '';
+  var foodname = '';
+  var restoName = '';
+  var price = '';
+  var calories = '';
+  var imgString64 = '';
+  List<String> filePaths = [];
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final global = GlobalService();
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Row(children: [
-        ElevatedButton(
-          child: const Text('Upload Images'),
-          onPressed: () async {
-            widget._filePaths.clear();
-            var picked = await FilePicker.platform.pickFiles(
-              allowMultiple: true, 
-              type: FileType.custom,
-              allowedExtensions: ['jpg', 'png']
-            );
-            if (picked != null) {
-              setState(() {
-                for (var file in picked.files) {
-                  // print(file.name);
-                  widget._filePaths.add(file.name);
-                }
-              });
-            }
-          },
-        ),
-        SizedBox(width: size.width * 0.025),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomText(label: widget._filePaths.isNotEmpty ? widget._filePaths[0] : ''),
-            CustomText(label: widget._filePaths.isNotEmpty ? widget._filePaths.length > 1 ? widget._filePaths[1] : '' : 'No files selected'),
-            CustomText(label: widget._filePaths.length == 3 ? widget._filePaths[2] : widget._filePaths.length > 2 ? '...' : ''),
-          ]
-        ),
-    ]);
-  }
-}
+    final User user = global.getUserData;
 
-// void handleUploadedFile(FilePickerResult? picked) {
-//   if (picked != null) {
-//     // Access the first picked file
-//     var file = picked.files.first;
-//     // Access the file name
-//     var fileName = file.name;
-//     // Access the file path
-//     var filePath = file.path;
-//     // Access the file bytes
-//     var fileBytes = file.bytes;
-//     // Access the file size
-//     var fileSize = file.size;
-
-//     // Do something with the uploaded file
-//     // For example, you can save it to a specific location or upload it to a server
-//     // ...
-//   } else {
-//     // No file was picked
-//     // Handle this case accordingly
-//     // ...
-//   }
-// }
-
-Future<dynamic> showAddEntryDialog(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-    var date = '';
-    var foodname = '';
-    var restoName = '';
-    var price = '';
-    var calories = '';
-    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    FileUploadButton fileUploadButton = FileUploadButton();
-
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
+    return AlertDialog(
           title: const CustomText(
             label: 'Please enter a new entry:', color: CustomColor.darkBlue,
             type: 'titleLarge', align: 'left',),
@@ -228,7 +180,41 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
                       Row(children: [
                         const Icon(Icons.image),
                         SizedBox(width: size.width * 0.025, height: size.height * 0.1),
-                        SizedBox(width: size.width * 0.75, child: fileUploadButton),
+                        SizedBox(width: size.width * 0.75, child: 
+                          Row(children: [
+                            ElevatedButton(
+                              child: const Text('Upload Images'),
+                              onPressed: () async {
+                                filePaths.clear();
+                                var picked = await FilePicker.platform.pickFiles(
+                                  // allowMultiple: true, 
+                                  type: FileType.custom,
+                                  allowedExtensions: ['jpg', 'png']
+                                );
+                                if (picked != null) {
+                                  setState(() {
+                                    for (var file in picked.files) {
+                                      // print(file.name);
+                                      // print(file.bytes); //Uint8List
+                                      imgString64 = base64String(file.bytes!);
+                                      filePaths.add(file.name);
+                                    }
+                                  });
+                                }
+                              },
+                            ),
+                            SizedBox(width: size.width * 0.025),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(label: filePaths.isNotEmpty ? filePaths[0] : 'No files selected'),
+                                // CustomText(label: filePaths.isNotEmpty ? filePaths[0] : ''),
+                                // CustomText(label: filePaths.isNotEmpty ? filePaths.length > 1 ? filePaths[1] : '' : 'No files selected'),
+                                // CustomText(label: filePaths.length == 3 ? filePaths[2] : filePaths.length > 2 ? '...' : ''),
+                              ]
+                            ),
+                        ])
+                        ),
                       ]),
                     ],
                   ),
@@ -250,24 +236,26 @@ Future<dynamic> showAddEntryDialog(BuildContext context) {
               onPressed: () {
                 var check = submitInputForm(formKey);
                 if (check) {
+                  // print(imgString64);
                   Entry newEntry = Entry(
                     entryID: DateTime.now().millisecondsSinceEpoch,
-                    entryImage: fileUploadButton._filePaths.isEmpty ?
-                      'assets/food_empty.png' :
-                      'assets/${fileUploadButton._filePaths[0]}', // 'assets/ramen.jpg',
-                    user: fakedata.userJack, // TODO: change to current user
+                    entryImage: filePaths.isEmpty ?
+                      '' : imgString64,
+                      // 'assets/food_empty.png' :
+                      //'assets/${filePaths[0]}', // 'assets/ramen.jpg',
+                    user: user,
                     date: DateTime.parse(date),
                     foodName: foodname,
                     restoName: restoName,
                     price: int.parse(price),
                     calories: int.parse(calories),
                   );
-                  // TODO: send new entry to db
                   Navigator.pop(context, newEntry);
                 }
               },
             ),
           ],
         );
-      },);
+
   }
+}

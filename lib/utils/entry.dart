@@ -35,7 +35,7 @@ class Entry {
       this.calories});
 
   factory Entry.fromJson(Map<String, dynamic> json) => Entry(
-        entryID: json['_id'],
+        entryID: json['entryID'],
         entryImage: json['entryImage'],
         user: User.fromJson(json['user']),
         foodName: json['foodName'],
@@ -46,7 +46,7 @@ class Entry {
       );
 
   Map<String, dynamic> toJson() => {
-        '_id': entryID,
+        'entryID': entryID,
         'entryImage': entryImage,
         'user': user.toJson(),
         'foodName': foodName,
