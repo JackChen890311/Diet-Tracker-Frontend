@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:diet_tracker/utils/entry.dart';
 import 'package:diet_tracker/utils/post.dart';
 import 'package:diet_tracker/utils/user.dart';
+import 'package:diet_tracker/utils/comment.dart';
 import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
 // import 'package:tuple/tuple.dart';
 
@@ -167,6 +168,76 @@ class ApiService {
       return {'statusCode': response.statusCode, 'body': response.body};
     }
   }
-  
 
+  Future<Map<String, dynamic>> likePost(int postID, User user) async {
+    final response = await http.post(Uri.parse('$baseUrl/post/like'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+          'postId': postID,
+          'user': user,
+        }),
+    );
+    if (response.statusCode == 200) {
+      print('Like a post successfully');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+    else {
+      print('Failed to like a post (${response.statusCode})');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+  }
+
+  Future<Map<String, dynamic>> dislikePost(int postID, User user) async {
+    final response = await http.post(Uri.parse('$baseUrl/post/dislike'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+          'postId': postID,
+          'user': user,
+        }),
+    );
+    if (response.statusCode == 200) {
+      print('Dislike a post successfully');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+    else {
+      print('Failed to like a post (${response.statusCode})');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+  }
+  
+  Future<Map<String, dynamic>> commentPost(int postID, Comment commentInfo) async {
+    final response = await http.post(Uri.parse('$baseUrl/post/comment'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+          'postId': postID,
+          'comment': commentInfo,
+        }),
+    );
+    if (response.statusCode == 200) {
+      print('Comment a post successfully');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+    else{
+      print('Failed to comment a post (${response.statusCode})');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+  
+  }
+
+  Future<Map<String, dynamic>> deletePost(int postID) async {
+    final response = await http.delete(Uri.parse('$baseUrl/post/$postID'));
+    if (response.statusCode == 200) {
+      print('Post deleted successfully');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    } else {
+      print('Error deleting post');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+  }
 }

@@ -8,6 +8,8 @@ import 'package:diet_tracker/utils/user.dart';
 import 'package:diet_tracker/utils/entry.dart';
 import 'package:diet_tracker/utils/image.dart';
 import 'package:diet_tracker/services/global_service.dart';
+import 'package:diet_tracker/services/api.dart';
+import 'package:diet_tracker/utils/comment.dart';
 
 final _global = GlobalService();
 final globalUser = _global.getUserData;
@@ -33,23 +35,12 @@ class _PostBlockState extends State<PostBlock> {
   // User get getUser => widget.post.user;
   // Entry get getEntry => widget.post.entry;
 
-  late List<dynamic> likeList;
-  late int likeCnt;
   late String _comment;
-  late List<dynamic> comment;
-  late int commentCnt;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final commentController = TextEditingController();
-  
+  List likeUserList = [];
+  List commentList = [];
 
-  @override
-  void initState() {
-    super.initState();    
-    likeList = widget.post.like!;
-    likeCnt = widget.post.likeCnt!;
-    comment = widget.post.comment!;
-    commentCnt = widget.post.commentCnt!;
-  }
 
   @override
   void dispose() {
@@ -57,8 +48,40 @@ class _PostBlockState extends State<PostBlock> {
     super.dispose();
   }
 
+  Future<void> likePost(int postID) async{
+    var response = await ApiService().likePost(postID, globalUser);
+    if(response['statusCode']==200){
+      Navigator.pushNamed(context, '/account');
+    }
+  }
+
+  Future<void> dislikePost(int postID) async{
+    var response = await ApiService().dislikePost(postID, globalUser);
+    if(response['statusCode']==200){
+      Navigator.pushNamed(context, '/account');
+    }
+  }
+
+  Future<void> commentPost(int postID, String comment) async{
+    Comment commentInfo = Comment(user: globalUser, content: comment, datetime: DateTime.now().millisecondsSinceEpoch);
+    var response1 = await ApiService().commentPost(postID, commentInfo);
+    if(response1['statusCode']==200){
+      Navigator.pushNamed(context, '/account');
+    }
+  }
+  
+
   @override
   Widget build(BuildContext context) {
+    
+    for(var likeUser in widget.post.like!){
+      likeUserList.add(likeUser['account']);
+    }
+    
+    for(var comment in widget.post.comment!){
+      Comment commentInfo = Comment.fromJson(comment);
+      commentList.add([commentInfo.user, commentInfo.content]);
+    }
     
     var size = MediaQuery.of(context).size;
     var entry = widget.post.entry;
@@ -71,10 +94,10 @@ class _PostBlockState extends State<PostBlock> {
     var calories = entry.calories;
     var userImg = entry.user.userImg;
     var userGender = entry.user.gender;
-    var isLiked = likeList.contains(globalUser);
-    if(comment.isEmpty){
-      comment = [];
-    }
+    // var isLiked = likeList.contains(globalUser);
+    // if(comment.isEmpty){
+    //   comment = [];
+    // }
     
 
     return SizedBox(
@@ -153,25 +176,32 @@ class _PostBlockState extends State<PostBlock> {
                 SizedBox(width: size.width * 0.04),
                 IconButton(
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  icon: isLiked? Icon(Icons.favorite, color:Colors.red[300]): const Icon(Icons.favorite),
+                  icon: likeUserList.contains(globalUser.account)? Icon(Icons.favorite, color:Colors.red[300]): const Icon(Icons.favorite),
                   onPressed: () {
-                    setState(() {
-                      isLiked = !isLiked;
-                      if(isLiked){
-                        likeList.add(globalUser);
-                        likeCnt += 1;
-                      }
-                      else{
-                        likeList.remove(globalUser);
-                        likeCnt -= 1;
-                      }
-                      // TODO: update "like" and "likeCnt" of Post in DB
-                    });
+                    if(!likeUserList.contains(globalUser.account)){
+                      likePost(widget.post.postID);
+                    }
+                    else{
+                      dislikePost(widget.post.postID);
+                    }
+                    
+                    // setState(() {
+                    //   isLiked = !isLiked;
+                    //   if(isLiked){
+                    //     likeList.add(globalUser);
+                    //     likeCnt += 1;
+                    //   }
+                    //   else{
+                    //     likeList.remove(globalUser);
+                    //     likeCnt -= 1;
+                    //   }
+                    //   // TODO: update "like" and "likeCnt" of Post in DB
+                    // });
                     print('heart');
                   },
                 ),
                 SizedBox(width: size.width * 0.02),
-                CustomText(label: likeCnt.toString()),
+                CustomText(label: likeUserList.length.toString()),
                 SizedBox(width: size.width * 0.02),
                 IconButton(
                   icon: const Icon(Icons.comment),
@@ -181,7 +211,7 @@ class _PostBlockState extends State<PostBlock> {
                   },
                 ),
                 SizedBox(width: size.width * 0.02),
-                CustomText(label: commentCnt.toString()),
+                CustomText(label: commentList.length.toString()),
               ],
             ),
             Divider(indent: size.width * 0.02, endIndent: size.width * 0.02, height: 0),
@@ -199,9 +229,9 @@ class _PostBlockState extends State<PostBlock> {
               ],
             ),
             Column(
-              children: comment.map((e) {
+              children:  commentList.map((e) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -247,16 +277,7 @@ class _PostBlockState extends State<PostBlock> {
                   onFieldSubmitted: (value) {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      // print(_comment);
-                      setState(() {
-                        commentController.clear();
-                        commentCnt += 1;
-                        List data = [];
-                        data.add(globalUser);
-                        data.add(_comment);
-                        comment.add(data);
-                        // TODO: write into DB & update Post in DB
-                      });
+                      commentPost(widget.post.postID, _comment);
                     }
                   },
                 ),
