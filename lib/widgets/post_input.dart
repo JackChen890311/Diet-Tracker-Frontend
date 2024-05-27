@@ -55,7 +55,8 @@ class _PostDialogState extends State<PostDialog> {
   Future<void> getEntries(User user) async{
     final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user.account);
     List<dynamic> response = jsonDecode(entryListString['body']);
-    
+
+    // TODO Check if this works, seems not
     Entry emptyEntry = Entry(entryID: 0, user: User(account: '', userName: '', /*email: '',*/ password: ''), foodName: '', restoName: '', price: 0, calories: 0, date: DateTime.now());
     _entryList.add(EntryBlock(entry: emptyEntry, imgFirst: true));
 
