@@ -8,6 +8,7 @@ import 'package:diet_tracker/utils/entry.dart';
 import 'package:diet_tracker/services/api.dart';
 import 'package:diet_tracker/services/global_service.dart';
 import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
+import 'package:quiver/time.dart';
 
 // Ref: https://github.com/imaNNeo/fl_chart/blob/main/repo_files/documentations/line_chart.md
 FlTitlesData get getTitlesData => const FlTitlesData(
@@ -67,7 +68,7 @@ class _MyLineChartState extends State<MyLineChart> {
   List<int> generateValue(int yearid, int monthid, List<int> keyDate, Map<DateTime, int>valueByDate){
     List<int> valueint = [];
     for (var d in keyDate){
-      if (valueByDate.containsKey(DateTime(yearid, monthid, d))){
+      if (valueByDate.containsKey(DateTime(yearid, monthid, d)) && d <= daysInMonth(yearid, monthid)){
         valueint.add(valueByDate[DateTime(yearid, monthid, d)]!);
       }
       else{
@@ -98,8 +99,6 @@ class _MyLineChartState extends State<MyLineChart> {
     final global = GlobalService();
     final User user = global.getUserData;
     _entryList.clear();
-    // TODO Maybe no need of future builder
-    // TODO Check 4/31 == 5/1?
 
     return FutureBuilder(
       future: getEntries(user),
