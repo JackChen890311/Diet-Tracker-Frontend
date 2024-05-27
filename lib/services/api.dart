@@ -127,5 +127,46 @@ class ApiService {
       return {'statusCode': response.statusCode, 'body': response.body};
     }
   }
+  // ========================================================================
+
+  // Post API
+  Future<Map<String, dynamic>> getPostsAll() async {
+    final response = await http.get(Uri.parse('$baseUrl/post'));
+    if (response.statusCode == 200) {
+      print('Getting all posts successfully');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    } else {
+      print('Failed to get posts');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+  }
+
+  Future<Map<String, dynamic>> getPostsOfUser(String account) async {
+    final response = await http.get(Uri.parse('$baseUrl/post/$account'));
+    if (response.statusCode == 200) {
+      print('Getting user posts successfully');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    } else {
+      print('Failed to get posts');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+  }
+
+  Future<Map<String, dynamic>> createPost(Post post) async {
+    final response = await http.post(Uri.parse('$baseUrl/post'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(post.toJson()),
+    );
+    if (response.statusCode == 201) {
+      print('Post created successfully');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    } else {
+      print('Failed to create post');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+  }
+  
 
 }

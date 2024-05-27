@@ -105,12 +105,48 @@ class HomePageState extends State<HomePage> {
       // To Database
       // print(newEntry.toJson());
       var result = await ApiService().createEntry(newEntry);
+      // Test
+      // Map<String, dynamic> result = {'statusCode': 201, 'body': ''};
       // print(result);
-      // TODO Add a dialog to show the result
+
       if (result['statusCode'] == 201){
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('新增成功'),
+              content: const Text('紀錄新增成功！'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
         print('<LOG> Entry added successfully');
       }
       else{
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('新增失敗'),
+              content: const Text('紀錄新增失敗，請檢查網路狀態或再試一次！'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
         print('<LOG> Failed to add entry');
       }
 
