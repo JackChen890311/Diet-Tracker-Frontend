@@ -55,6 +55,10 @@ class _PostDialogState extends State<PostDialog> {
   Future<void> getEntries(User user) async{
     final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user.account);
     List<dynamic> response = jsonDecode(entryListString['body']);
+    
+    Entry emptyEntry = Entry(entryID: 0, user: User(account: '', userName: '', /*email: '',*/ password: ''), foodName: '', restoName: '', price: 0, calories: 0, date: DateTime.now());
+    _entryList.add(EntryBlock(entry: emptyEntry, imgFirst: true));
+
     if (response.isEmpty){
       return;
     }
@@ -65,8 +69,6 @@ class _PostDialogState extends State<PostDialog> {
       );
     }
 
-    Entry emptyEntry = Entry(entryID: 0, user: User(account: '', userName: '', /*email: '',*/ password: ''), foodName: '', restoName: '', price: 0, calories: 0, date: DateTime.now());
-    _entryList.add(EntryBlock(entry: emptyEntry, imgFirst: true));
 
     // print('Done');
     // print(_entryList.length);
