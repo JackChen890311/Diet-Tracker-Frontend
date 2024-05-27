@@ -20,7 +20,7 @@ class Post {
   final User user;
   final Entry entry;
   final String? description;
-  final List<User>? like;
+  final List<dynamic>? like;
   final int? likeCnt;
   final List<dynamic>? comment;
   final int? commentCnt;
@@ -36,7 +36,7 @@ class Post {
       this.commentCnt});
 
   factory Post.fromJson(Map<String, dynamic> json) => Post(
-        postID: json['_id'],
+        postID: json['postID'],
         user: User.fromJson(json['user']),
         entry: Entry.fromJson(json['entry']),
         description: json['description'],
@@ -47,7 +47,7 @@ class Post {
       );
 
   Map<String, dynamic> toJson() => {
-        '_id': postID,
+        'postID': postID,
         'user': user.toJson(),
         'entry': entry.toJson(),
         'description': description,

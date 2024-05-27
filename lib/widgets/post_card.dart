@@ -6,6 +6,7 @@ import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/post.dart';
 import 'package:diet_tracker/utils/user.dart';
 import 'package:diet_tracker/utils/entry.dart';
+import 'package:diet_tracker/utils/image.dart';
 import 'package:diet_tracker/services/global_service.dart';
 
 final _global = GlobalService();
@@ -32,7 +33,7 @@ class _PostBlockState extends State<PostBlock> {
   // User get getUser => widget.post.user;
   // Entry get getEntry => widget.post.entry;
 
-  late List<User> likeList;
+  late List<dynamic> likeList;
   late int likeCnt;
   late String _comment;
   late List<dynamic> comment;
@@ -144,7 +145,7 @@ class _PostBlockState extends State<PostBlock> {
             Container(
               color: Colors.white,
               height: size.height * 0.5,
-              child: Center(child: Image.asset(photo!, fit: BoxFit.cover),),
+              child: Center(child: photo!.isEmpty ? Image.asset('assets/food_empty.png') : imageFromBase64String(photo, cover: true)),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
