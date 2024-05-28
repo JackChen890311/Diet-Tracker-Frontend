@@ -39,10 +39,18 @@ class _AccountPageState extends State<AccountPage> {
   Future<void> getPostsandCount(User user) async{
     final Map<String, dynamic>postListString = await ApiService().getPostsAll();
     List<dynamic> response = jsonDecode(postListString['body']);
+    
+    final Map<String, dynamic>entryListStringUser = await ApiService().getEntriesOfUser(user);
+    List<dynamic> response2 = jsonDecode(entryListStringUser['body']);
+    _entryCnt = response2.isEmpty ? 0 : response2.length;
+
+    final Map<String, dynamic>postListStringUser = await ApiService().getPostsOfUser(user);
+    List<dynamic> response3 = jsonDecode(postListStringUser['body']);
+    _postCnt = response3.isEmpty ? 0 : response3.length;
+
     if (response.isEmpty){
       return;
     }
-
     for (var post in response){
       _postList.add(
         PostBlock(post: Post.fromJson(post))
@@ -51,13 +59,6 @@ class _AccountPageState extends State<AccountPage> {
     // print('Done');
     // print(_postList.length);
 
-    final Map<String, dynamic>entryListStringUser = await ApiService().getEntriesOfUser(user);
-    List<dynamic> response2 = jsonDecode(entryListStringUser['body']);
-    _entryCnt = response2.isEmpty ? 0 : response2.length;
-
-    final Map<String, dynamic>postListStringUser = await ApiService().getPostsOfUser(user);
-    List<dynamic> response3 = jsonDecode(postListStringUser['body']);
-    _postCnt = response3.isEmpty ? 0 : response3.length;
 
   }
 
