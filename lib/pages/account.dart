@@ -52,11 +52,11 @@ class _AccountPageState extends State<AccountPage> {
     if (response.isEmpty){
       return;
     }
-    for (var post in response){
-      _postList.add(
-        PostBlock(post: Post.fromJson(post))
-      );
-    }
+    // for (var post in response){
+    //   _postList.add(
+    //     PostBlock(post: Post.fromJson(post))
+    //   );
+    // }
     int likeCnt = 0;
     for (var post in response){
       // Post postObject = Post.fromJson(post);
