@@ -29,6 +29,7 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   late int _entryCnt;
   late int _postCnt;
+  late int _likeCnt;
   final List<PostBlock> _postList = [];
   // final List<PostBlock> _postList = fakedata.postList;
 
@@ -56,6 +57,18 @@ class _AccountPageState extends State<AccountPage> {
         PostBlock(post: Post.fromJson(post))
       );
     }
+    int likeCnt = 0;
+    for (var post in response){
+      // Post postObject = Post.fromJson(post);
+      _postList.add(
+        PostBlock(post: Post.fromJson(post))
+      );
+      if(Post.fromJson(post).user.account == user.account){
+        likeCnt += Post.fromJson(post).likeCnt!;
+      }
+    }
+    // print(likeCnt);
+    _likeCnt = likeCnt;
     // print('Done');
     // print(_postList.length);
 
@@ -245,29 +258,30 @@ class _AccountPageState extends State<AccountPage> {
                                       ),
                                     ],
                                   ),
-                                  // SizedBox(width: size.width*0.025),
-                                  // Column(
-                                  //   crossAxisAlignment: CrossAxisAlignment.center,
-                                  //   children: [
-                                  //     Text(
-                                  //       '${user.likeCnt!}',
-                                  //       style: const TextStyle(
-                                  //         color: Colors.black,
-                                  //         fontWeight:FontWeight.bold,
-                                  //         fontSize: 16,
-                                  //       ),
-                                  //     ),
-                                  //     const SizedBox(height: 5),
-                                  //     const Text(
-                                  //       "Likes",
-                                  //       style: TextStyle(
-                                  //         color: Colors.grey,
-                                  //         fontWeight:FontWeight.normal,
-                                  //         fontSize: 16,
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // ),
+                                  SizedBox(width: size.width*0.025),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        // '${user.likeCnt!}',
+                                        '$_likeCnt',
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontWeight:FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      const Text(
+                                        "Likes",
+                                        style: TextStyle(
+                                          color: Colors.grey,
+                                          fontWeight:FontWeight.normal,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                   SizedBox(width: size.width*0.025),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
