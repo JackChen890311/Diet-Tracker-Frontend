@@ -11,8 +11,7 @@ import 'package:diet_tracker/services/global_service.dart';
 import 'package:diet_tracker/services/api.dart';
 import 'package:diet_tracker/utils/comment.dart';
 
-final _global = GlobalService();
-final globalUser = _global.getUserData;
+
 
 class PostBlock extends StatefulWidget {
   const PostBlock({
@@ -48,21 +47,21 @@ class _PostBlockState extends State<PostBlock> {
     super.dispose();
   }
 
-  Future<void> likePost(int postID) async{
+  Future<void> likePost(int postID, User globalUser) async{
     var response = await ApiService().likePost(postID, globalUser);
     if(response['statusCode']==200){
       Navigator.pushNamed(context, '/account');
     }
   }
 
-  Future<void> dislikePost(int postID) async{
+  Future<void> dislikePost(int postID, User globalUser) async{
     var response = await ApiService().dislikePost(postID, globalUser);
     if(response['statusCode']==200){
       Navigator.pushNamed(context, '/account');
     }
   }
 
-  Future<void> commentPost(int postID, String comment) async{
+  Future<void> commentPost(int postID, String comment, User globalUser) async{
     Comment commentInfo = Comment(user: globalUser, content: comment, datetime: DateTime.now().millisecondsSinceEpoch);
     var response1 = await ApiService().commentPost(postID, commentInfo);
     if(response1['statusCode']==200){
@@ -73,6 +72,8 @@ class _PostBlockState extends State<PostBlock> {
 
   @override
   Widget build(BuildContext context) {
+    var _global = GlobalService();
+    var globalUser = _global.getUserData;
     
     for(var likeUser in widget.post.like!){
       likeUserList.add(likeUser['account']);
@@ -179,10 +180,10 @@ class _PostBlockState extends State<PostBlock> {
                   icon: likeUserList.contains(globalUser.account)? Icon(Icons.favorite, color:Colors.red[300]): const Icon(Icons.favorite),
                   onPressed: () {
                     if(!likeUserList.contains(globalUser.account)){
-                      likePost(widget.post.postID);
+                      likePost(widget.post.postID, globalUser);
                     }
                     else{
-                      dislikePost(widget.post.postID);
+                      dislikePost(widget.post.postID, globalUser);
                     }
                     
                     // setState(() {
@@ -277,7 +278,7 @@ class _PostBlockState extends State<PostBlock> {
                   onFieldSubmitted: (value) {
                     if (_formKey.currentState!.validate()) {
                       _formKey.currentState!.save();
-                      commentPost(widget.post.postID, _comment);
+                      commentPost(widget.post.postID, _comment, globalUser);
                     }
                   },
                 ),
