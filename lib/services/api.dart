@@ -99,11 +99,53 @@ class ApiService {
       return {'statusCode': response.statusCode, 'body': response.body};
     }
   }
+  Future<Map<String, dynamic>> updateUser(User newUser) async{
+    final response = await http.put(Uri.parse('$baseUrl/user/${newUser.account}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(newUser.toJson()));
+    print(response);
+    if (response.statusCode == 200) {
+      return {'statusCode': response.statusCode, 'body': response.body};
+    } else {
+      print('Failed to update user data');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+  }
+
+  Future<Map<String, dynamic>> updateUserImg(User user, String imgString64) async{
+    User newUser = User(
+      account: user.account,
+      password: user.password,
+      userName: user.userName,
+      userImg: imgString64,
+      gender: user.gender,
+      postCnt: user.postCnt,
+      entryCnt: user.entryCnt,
+      likeCnt: user.likeCnt);
+    final respone = await updateUser(newUser);
+    return respone;
+  }
+
+  Future<Map<String, dynamic>> updateUserLikeCnt(User user, int diff) async{
+    User newUser = User(
+      account: user.account,
+      password: user.password,
+      userName: user.userName,
+      userImg: user.userImg,
+      gender: user.gender,
+      postCnt: user.postCnt,
+      entryCnt: user.entryCnt,
+      likeCnt: user.likeCnt!+diff);
+    final respone = await updateUser(newUser);
+    return respone;
+  }
   // ========================================================================
 
   // Entry API
-  Future<Map<String, dynamic>> getEntriesOfUser(String account) async {
-    final response = await http.get(Uri.parse('$baseUrl/entry/$account'));
+  Future<Map<String, dynamic>> getEntriesOfUser(User user) async {
+    final response = await http.get(Uri.parse('$baseUrl/entry/${user.account}'));
     if (response.statusCode == 200) {
       print('Getting entries successfully');
       return {'statusCode': response.statusCode, 'body': response.body};
@@ -142,8 +184,8 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getPostsOfUser(String account) async {
-    final response = await http.get(Uri.parse('$baseUrl/post/$account'));
+  Future<Map<String, dynamic>> getPostsOfUser(User user) async {
+    final response = await http.get(Uri.parse('$baseUrl/post/${user.account}'));
     if (response.statusCode == 200) {
       print('Getting user posts successfully');
       return {'statusCode': response.statusCode, 'body': response.body};
@@ -179,7 +221,8 @@ class ApiService {
           'user': user,
         }),
     );
-    if (response.statusCode == 200) {
+    final response2 = await updateUserLikeCnt(user, 1);
+    if (response.statusCode == 200 && response2['statusCode'] == 200) {
       print('Like a post successfully');
       return {'statusCode': response.statusCode, 'body': response.body};
     }
@@ -199,7 +242,8 @@ class ApiService {
           'user': user,
         }),
     );
-    if (response.statusCode == 200) {
+    final response2 = await updateUserLikeCnt(user, -1);
+    if (response.statusCode == 200 && response2['statusCode'] == 200) {
       print('Dislike a post successfully');
       return {'statusCode': response.statusCode, 'body': response.body};
     }

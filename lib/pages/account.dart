@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:diet_tracker/widgets/app_bar.dart';
 import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/utils/user.dart';
+import 'package:diet_tracker/utils/image.dart';
+import 'package:diet_tracker/utils/entry.dart';
 import 'package:diet_tracker/utils/post.dart';
 import 'package:diet_tracker/widgets/post_card.dart';
 import 'package:diet_tracker/widgets/post_input.dart';
+import 'package:diet_tracker/widgets/entry_card.dart';
 import 'package:diet_tracker/utils/fakedata_lib.dart' as fakedata;
 import 'package:diet_tracker/services/global_service.dart';
 import 'package:diet_tracker/services/api.dart';
@@ -23,6 +27,8 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  late int _entryCnt;
+  late int _postCnt;
   final List<PostBlock> _postList = [];
   // final List<PostBlock> _postList = fakedata.postList;
 
@@ -30,7 +36,7 @@ class _AccountPageState extends State<AccountPage> {
     return -a.getEntry.date!.compareTo(b.getEntry.date!);
   }
 
-  Future<void> getPosts() async{
+  Future<void> getPostsandCount(User user) async{
     final Map<String, dynamic>postListString = await ApiService().getPostsAll();
     List<dynamic> response = jsonDecode(postListString['body']);
     if (response.isEmpty){
@@ -44,6 +50,15 @@ class _AccountPageState extends State<AccountPage> {
     }
     // print('Done');
     // print(_postList.length);
+
+    final Map<String, dynamic>entryListStringUser = await ApiService().getEntriesOfUser(user);
+    List<dynamic> response2 = jsonDecode(entryListStringUser['body']);
+    _entryCnt = response2.isEmpty ? 0 : response2.length;
+
+    final Map<String, dynamic>postListStringUser = await ApiService().getPostsOfUser(user);
+    List<dynamic> response3 = jsonDecode(postListStringUser['body']);
+    _postCnt = response3.isEmpty ? 0 : response3.length;
+
   }
 
   void _addNewPost () async {
@@ -118,7 +133,7 @@ class _AccountPageState extends State<AccountPage> {
     
     
     return FutureBuilder(
-      future: getPosts(),
+      future: getPostsandCount(user),
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -165,6 +180,27 @@ class _AccountPageState extends State<AccountPage> {
                                       radius: size.height * 0.1,
                                     ),
                                   ),
+                                  // TODO add update user img
+                                  // I'm not sure if it works (Will AssetImage work with base64 string?)
+                                  // IconButton(
+                                  //   onPressed: () async {
+                                  //     var picked = await FilePicker.platform.pickFiles(
+                                  //       // allowMultiple: true, 
+                                  //       type: FileType.custom,
+                                  //       allowedExtensions: ['jpg', 'png']
+                                  //     );
+                                  //     if (picked != null) {
+                                  //       for (var file in picked.files) {
+                                  //         print(file.name);
+                                  //         print(file.bytes); //Uint8List
+                                  //         String imgString64 = base64String(file.bytes!);
+                                  //       }
+                                  //       // var result = await ApiService().updateUserImg(user, base64String(picked.files[0].bytes!));
+                                  //       // print(result);
+                                  //     }
+                                  //   }, 
+                                  //   icon: const Icon(Icons.camera_alt_rounded
+                                  // )),
                                   SizedBox(width: size.width*0.005),
                                   Text(user.userName,
                                     style: const TextStyle(
@@ -189,7 +225,8 @@ class _AccountPageState extends State<AccountPage> {
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '${user.postCnt!}',
+                                        // '${user.postCnt!}',
+                                        '$_postCnt',
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight:FontWeight.bold,
@@ -207,35 +244,36 @@ class _AccountPageState extends State<AccountPage> {
                                       ),
                                     ],
                                   ),
+                                  // SizedBox(width: size.width*0.025),
+                                  // Column(
+                                  //   crossAxisAlignment: CrossAxisAlignment.center,
+                                  //   children: [
+                                  //     Text(
+                                  //       '${user.likeCnt!}',
+                                  //       style: const TextStyle(
+                                  //         color: Colors.black,
+                                  //         fontWeight:FontWeight.bold,
+                                  //         fontSize: 16,
+                                  //       ),
+                                  //     ),
+                                  //     const SizedBox(height: 5),
+                                  //     const Text(
+                                  //       "Likes",
+                                  //       style: TextStyle(
+                                  //         color: Colors.grey,
+                                  //         fontWeight:FontWeight.normal,
+                                  //         fontSize: 16,
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
                                   SizedBox(width: size.width*0.025),
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '${user.likeCnt!}',
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight:FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 5),
-                                      const Text(
-                                        "Likes",
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontWeight:FontWeight.normal,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(width: size.width*0.025),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        '${user.postCnt!}',
+                                        // '${user.postCnt!}',
+                                        '$_entryCnt',
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight:FontWeight.bold,

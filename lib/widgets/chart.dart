@@ -79,7 +79,7 @@ class _MyLineChartState extends State<MyLineChart> {
   }
 
   Future<void> getEntries(User user) async{
-    final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user.account);
+    final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user);
     List<dynamic> response = jsonDecode(entryListString['body']);
     if (response.isEmpty){
       return;
