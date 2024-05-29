@@ -5,6 +5,7 @@ import 'package:diet_tracker/utils/user.dart';
 import 'package:diet_tracker/utils/entry.dart';
 import 'package:diet_tracker/utils/image.dart';
 import 'package:diet_tracker/services/global_service.dart';
+import 'package:diet_tracker/services/api.dart';
 
 
 Future<dynamic> showAddEntryDialog(BuildContext context) {
@@ -52,11 +53,30 @@ class _EntryDialogState extends State<EntryDialog> {
   List<String> filePaths = [];
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final global = GlobalService();
+  final ctlr = TextEditingController();
+  var _response = '';
+
+  Future<void> askGemini(String imgString64) async{
+    // var response = await ApiService().askGemini(imgString64);
+    // if(response['statusCode']==200){
+      // TODO:decode `message: text` and save it to `ctlr.text` & `_response`
+      // ctlr.text = 
+      // _response = 
+      // if(_response=''){
+      //    _response = 'No uploaded image';
+      // }
+    // }
+    setState(() {
+       _response = '100';
+      ctlr.text = '100';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     final User user = global.getUserData;
+    print(_response);
 
     return AlertDialog(
           title: const CustomText(
@@ -158,6 +178,7 @@ class _EntryDialogState extends State<EntryDialog> {
                           SizedBox(width: size.width * 0.025),
                           SizedBox(width: size.width * 0.3, child: 
                             TextFormField(
+                              controller: ctlr,
                               decoration: const InputDecoration(
                                 labelText: 'Calories',
                                 hintText: 'e.g. 500',
@@ -215,9 +236,24 @@ class _EntryDialogState extends State<EntryDialog> {
                             ),
                         ])
                         ),
-                      ]),
-                    ],
-                  ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.tips_and_updates),
+                          SizedBox(width: size.width * 0.025),
+                          ElevatedButton(
+                            onPressed: (){
+                              askGemini(filePaths.isEmpty ?'' : imgString64);
+                            }, 
+                            child: const Text('Click here to estimate calories')
+                          ),
+                          SizedBox(width: size.width * 0.025),
+                          _response == ''? const Text(''):Text('Calories = $_response'),
+                        ]),
+                        ]
+                      )
+
                 )
               ],
             ),

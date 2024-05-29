@@ -284,4 +284,24 @@ class ApiService {
       return {'statusCode': response.statusCode, 'body': response.body};
     }
   }
+  // ========================================================================
+
+  // Gemini API
+  Future<Map<String, dynamic>> askGemini(String inputImageBase64) async {
+    final response = await http.post(Uri.parse('$baseUrl/gemini'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+          'inputImageBase64': inputImageBase64,
+        }),
+    );
+    if (response.statusCode == 200) {
+      print('Gemini response');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    } else {
+      print('Some fields are missing');
+      return {'statusCode': response.statusCode, 'body': response.body};
+    }
+  }
 }
