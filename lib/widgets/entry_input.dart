@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:diet_tracker/utils/style.dart';
@@ -57,8 +59,20 @@ class _EntryDialogState extends State<EntryDialog> {
   var _response = '';
 
   Future<void> askGemini(String imgString64) async{
-    // var response = await ApiService().askGemini(imgString64);
-    // if(response['statusCode']==200){
+    var response = await ApiService().askGemini(imgString64);
+    var message = jsonDecode(response['body'])['message'];
+    var messageList = message.split('\n\n');
+    var calNum = messageList.last;
+    var message2 = messageList.sublist(0,messageList.length-1).join('\n\n');
+    // print(messageList);
+    // print(calNum);
+    // print(message2);
+    // print(response);
+    setState(() {
+      _response = response['statusCode'] == 200 ? message2 : 'Error';
+      ctlr.text = '$calNum';
+    });
+    // if(response['statusCode'] == 200){
       // TODO:decode `message: text` and save it to `ctlr.text` & `_response`
       // ctlr.text = 
       // _response = 
@@ -66,10 +80,13 @@ class _EntryDialogState extends State<EntryDialog> {
       //    _response = 'No uploaded image';
       // }
     // }
-    setState(() {
-       _response = '100';
-      ctlr.text = '100';
-    });
+    // else{
+    //   _response = 'Error';
+    // }
+    // setState(() {
+    //    _response = '100';
+    //   ctlr.text = '100';
+    // });
   }
 
   @override
@@ -84,7 +101,7 @@ class _EntryDialogState extends State<EntryDialog> {
             type: 'titleLarge', align: 'left',),
           content: SizedBox(
             width: size.width * 0.8,
-            height: size.height * 0.5,
+            height: size.height * 0.7,
             child: Column(
               children: [
                 Form(
@@ -244,12 +261,16 @@ class _EntryDialogState extends State<EntryDialog> {
                           SizedBox(width: size.width * 0.025),
                           ElevatedButton(
                             onPressed: (){
+                              setState(() {
+                                _response = 'Waiting...';
+                              });
                               askGemini(filePaths.isEmpty ?'' : imgString64);
                             }, 
                             child: const Text('Click here to estimate calories')
                           ),
                           SizedBox(width: size.width * 0.025),
-                          _response == ''? const Text(''):Text('Calories = $_response'),
+                          _response == '' ? const Text('') : 
+                          SingleChildScrollView(child: Text(_response)),
                         ]),
                         ]
                       )
