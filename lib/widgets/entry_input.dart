@@ -61,13 +61,13 @@ class _EntryDialogState extends State<EntryDialog> {
   Future<void> askGemini(String imgString64) async{
     var response = await ApiService().askGemini(imgString64);
     var message = jsonDecode(response['body'])['message'];
-    var messageList = message.split('\n\n');
+    var messageList = message.split('\n');
     var calNum = messageList.last;
-    var message2 = messageList.sublist(0,messageList.length-1).join('\n\n');
+    var message2 = messageList.sublist(0,messageList.length-1).join('\n');
+    print(response);
     // print(messageList);
     // print(calNum);
     // print(message2);
-    // print(response);
     setState(() {
       _response = response['statusCode'] == 200 ? message2 : 'Error';
       ctlr.text = '$calNum';
@@ -101,7 +101,7 @@ class _EntryDialogState extends State<EntryDialog> {
             type: 'titleLarge', align: 'left',),
           content: SizedBox(
             width: size.width * 0.8,
-            height: size.height * 0.7,
+            height: size.height * 0.5,
             child: Column(
               children: [
                 Form(
@@ -269,8 +269,8 @@ class _EntryDialogState extends State<EntryDialog> {
                             child: const Text('Click here to estimate calories')
                           ),
                           SizedBox(width: size.width * 0.025),
-                          _response == '' ? const Text('') : 
-                          SingleChildScrollView(child: Text(_response)),
+                          _response == '' ? const Text('') :            
+                          SizedBox(width: size.width * 0.4, child: SingleChildScrollView(child: Text(_response))),
                         ]),
                         ]
                       )
