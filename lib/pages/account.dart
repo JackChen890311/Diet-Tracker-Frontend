@@ -27,10 +27,10 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  late int _entryCnt;
-  late int _postCnt;
-  late int _likeCnt;
-  final List<PostBlock> _postList = [];
+  // late int _entryCnt;
+  // late int _postCnt;
+  // late int _likeCnt;
+  // final List<PostBlock> _postList = [];
   // final List<PostBlock> _postList = fakedata.postList;
 
   int sortComparisonByDate(PostBlock a, PostBlock b){
@@ -38,38 +38,38 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> getPostsandCount(User user) async{
-    final Map<String, dynamic>postListString = await ApiService().getPostsAll();
-    List<dynamic> response = jsonDecode(postListString['body']);
+    // final Map<String, dynamic>postListString = await ApiService().getPostsAll();
+    // List<dynamic> response = jsonDecode(postListString['body']);
     
-    final Map<String, dynamic>entryListStringUser = await ApiService().getEntriesOfUser(user);
-    List<dynamic> response2 = jsonDecode(entryListStringUser['body']);
-    _entryCnt = response2.isEmpty ? 0 : response2.length;
+    // final Map<String, dynamic>entryListStringUser = await ApiService().getEntriesOfUser(user);
+    // List<dynamic> response2 = jsonDecode(entryListStringUser['body']);
+    // _entryCnt = response2.isEmpty ? 0 : response2.length;
 
-    final Map<String, dynamic>postListStringUser = await ApiService().getPostsOfUser(user);
-    List<dynamic> response3 = jsonDecode(postListStringUser['body']);
-    _postCnt = response3.isEmpty ? 0 : response3.length;
+    // final Map<String, dynamic>postListStringUser = await ApiService().getPostsOfUser(user);
+    // List<dynamic> response3 = jsonDecode(postListStringUser['body']);
+    // _postCnt = response3.isEmpty ? 0 : response3.length;
 
-    if (response.isEmpty){
-      return;
-    }
+    // if (response.isEmpty){
+    //   return;
+    // }
+    // // for (var post in response){
+    // //   _postList.add(
+    // //     PostBlock(post: Post.fromJson(post))
+    // //   );
+    // // }
+    // int likeCnt = 0;
     // for (var post in response){
+    //   // Post postObject = Post.fromJson(post);
     //   _postList.add(
     //     PostBlock(post: Post.fromJson(post))
     //   );
+    //   if(Post.fromJson(post).user.account == user.account){
+    //     likeCnt += Post.fromJson(post).likeCnt!;
+    //   }
     // }
-    int likeCnt = 0;
-    for (var post in response){
-      // Post postObject = Post.fromJson(post);
-      _postList.add(
-        PostBlock(post: Post.fromJson(post))
-      );
-      if(Post.fromJson(post).user.account == user.account){
-        likeCnt += Post.fromJson(post).likeCnt!;
-      }
-    }
-    // print(likeCnt);
-    _likeCnt = likeCnt;
-    // print('Done');
+    // // print(likeCnt);
+    // _likeCnt = likeCnt;
+    print('Done');
     // print(_postList.length);
 
 
@@ -144,7 +144,10 @@ class _AccountPageState extends State<AccountPage> {
     var size = MediaQuery.of(context).size;
     final global = GlobalService();
     final user = global.getUserData;
-    
+    final List<PostBlock> postList = global.getPostData;
+    int entryCnt = global.getEntryCnt;
+    int postCnt = global.getPostCnt;
+    int likeCnt = global.getLikeCnt;    
     
     return FutureBuilder(
       future: getPostsandCount(user),
@@ -154,7 +157,7 @@ class _AccountPageState extends State<AccountPage> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          _postList.sort(sortComparisonByDate);
+          postList.sort(sortComparisonByDate);
           return Scaffold(
             appBar: const MyAppBar(title: 'Account'),
             body: Center(
@@ -240,7 +243,7 @@ class _AccountPageState extends State<AccountPage> {
                                     children: [
                                       Text(
                                         // '${user.postCnt!}',
-                                        '$_postCnt',
+                                        '$postCnt',
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight:FontWeight.bold,
@@ -264,7 +267,7 @@ class _AccountPageState extends State<AccountPage> {
                                     children: [
                                       Text(
                                         // '${user.likeCnt!}',
-                                        '$_likeCnt',
+                                        '$likeCnt',
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight:FontWeight.bold,
@@ -288,7 +291,7 @@ class _AccountPageState extends State<AccountPage> {
                                     children: [
                                       Text(
                                         // '${user.postCnt!}',
-                                        '$_entryCnt',
+                                        '$entryCnt',
                                         style: const TextStyle(
                                           color: Colors.black,
                                           fontWeight:FontWeight.bold,
@@ -321,7 +324,7 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                   Expanded(
                     flex: 2,
-                    child:_postList.isEmpty ? 
+                    child:postList.isEmpty ? 
                       const Center(
                           child: CustomText(label: "No posts yet.\n\nClick the button below to add a new post.\n", 
                                         type: 'displaySmall',),
@@ -332,9 +335,9 @@ class _AccountPageState extends State<AccountPage> {
                         child: SizedBox(
                           height: size.height * 0.9, 
                           child: ListView.builder(
-                            itemCount: _postList.length,
+                            itemCount: postList.length,
                             itemBuilder: (context, index){
-                              return _postList[index];
+                              return postList[index];
                             }
                           ),
                         )

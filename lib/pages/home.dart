@@ -29,7 +29,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  final List<EntryBlock> _entryList = [];
+  late User user;
+  // final List<EntryBlock> _entryList = [];
   // final List<EntryBlock> _entryList = fakedata.entryList;
 
   int calculateDifference(DateTime date) {
@@ -38,18 +39,18 @@ class HomePageState extends State<HomePage> {
   }
 
   Future<void> getEntries(User user) async{
-    final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user);
-    List<dynamic> response = jsonDecode(entryListString['body']);
-    if (response.isEmpty){
-      return;
-    }
+    // final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user);
+    // List<dynamic> response = jsonDecode(entryListString['body']);
+    // if (response.isEmpty){
+    //   return;
+    // }
 
-    for (var entry in response){
-      _entryList.add(
-        EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
-      );
-    }
-    // print('Done');
+    // for (var entry in response){
+    //   _entryList.add(
+    //     EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
+    //   );
+    // }
+    print('Done');
     // print(_entryList.length);
   }
 
@@ -158,6 +159,7 @@ class HomePageState extends State<HomePage> {
     var size = MediaQuery.of(context).size;
     final global = GlobalService();
     final User user = global.getUserData;
+    List<EntryBlock> entryList = global.getEntryData;
     var decodedJson = user.toJson();
     var userImg = decodedJson['userImg'];
     var userGender = decodedJson['gender'];
@@ -171,9 +173,9 @@ class HomePageState extends State<HomePage> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          var total = calculateTotal(_entryList);
-          var totalToday = calculateTotalToday(_entryList);
-          _entryList.sort(sortComparisonByDate);
+          var total = calculateTotal(entryList);
+          var totalToday = calculateTotalToday(entryList);
+          entryList.sort(sortComparisonByDate);
 
           return Scaffold(
             appBar: const MyAppBar(title: 'Diet Tracker'),
@@ -206,7 +208,7 @@ class HomePageState extends State<HomePage> {
               CustomText(label: "Total Calories Today: ${totalToday[1]}", type: 'titleSmall',),
             ],
           ),
-          _entryList.isEmpty ? 
+          entryList.isEmpty ? 
             const Center(
                 child: CustomText(label: "No entries yet.\n\nClick the button below to add a new entry.\n", 
                               type: 'displaySmall',),
@@ -219,9 +221,9 @@ class HomePageState extends State<HomePage> {
                   height: size.height * 0.9,
                   width: size.width * 0.5,
                   child: ListView.builder(
-                    itemCount: _entryList.length,
+                    itemCount: entryList.length,
                     itemBuilder: (context, index){
-                      return _entryList[index];
+                      return entryList[index];
                     }
                   ),
                 )

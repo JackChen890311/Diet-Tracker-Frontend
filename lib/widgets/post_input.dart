@@ -44,7 +44,7 @@ class PostDialog extends StatefulWidget {
 
 class _PostDialogState extends State<PostDialog> {
   late int dropdownValue;
-  final List<EntryBlock> _entryList = [];
+  // final List<EntryBlock> _entryList = [];
   int get getDDValue => dropdownValue;
   final global = GlobalService();
 
@@ -53,24 +53,24 @@ class _PostDialogState extends State<PostDialog> {
   }
 
   Future<void> getEntries(User user) async{
-    final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user);
-    List<dynamic> response = jsonDecode(entryListString['body']);
+    // final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user);
+    // List<dynamic> response = jsonDecode(entryListString['body']);
 
-    Entry emptyEntry = Entry(entryID: 0, user: User(account: '', userName: '', /*email: '',*/ password: ''), foodName: '', restoName: '', price: 0, calories: 0, date: DateTime.now());
-    _entryList.add(EntryBlock(entry: emptyEntry, imgFirst: true));
+    // Entry emptyEntry = Entry(entryID: 0, user: User(account: '', userName: '', /*email: '',*/ password: ''), foodName: '', restoName: '', price: 0, calories: 0, date: DateTime.now());
+    // _entryList.add(EntryBlock(entry: emptyEntry, imgFirst: true));
 
-    if (response.isEmpty){
-      return;
-    }
+    // if (response.isEmpty){
+    //   return;
+    // }
 
-    for (var entry in response){
-      _entryList.add(
-        EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
-      );
-    }
+    // for (var entry in response){
+    //   _entryList.add(
+    //     EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
+    //   );
+    // }
 
 
-    // print('Done');
+    print('Done');
     // print(_entryList.length);
     // for (var entryBlock in _entryList) {
     //   print(entryBlock.getEntry.entryID);
@@ -99,7 +99,8 @@ class _PostDialogState extends State<PostDialog> {
     var description = '';
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
     final User user = global.getUserData;
-    _entryList.clear();
+    final List<EntryBlock> entryList = global.getEntryDataWithEmpty;
+    // _entryList.clear();
 
     return FutureBuilder(
       future: getEntries(user),
@@ -113,7 +114,7 @@ class _PostDialogState extends State<PostDialog> {
           // for (var entryBlock in _entryList) {
           //   print(entryBlock.getEntry.entryID);
           // }
-          _entryList.sort(sortComparisonByDate);
+          entryList.sort(sortComparisonByDate);
           return AlertDialog(
             title: const CustomText(
               label: 'Please enter a new post (You need to have entries to add a post):', color: CustomColor.darkBlue,
@@ -138,7 +139,7 @@ class _PostDialogState extends State<PostDialog> {
                                   dropdownValue = newValue!;
                                 });
                               },
-                              items: _entryList.map<DropdownMenuItem<int>>((EntryBlock entryBlock) {
+                              items: entryList.map<DropdownMenuItem<int>>((EntryBlock entryBlock) {
                                 var entry = entryBlock.getEntry;
                                 return DropdownMenuItem<int>(
                                   value: entry.entryID,
@@ -184,7 +185,7 @@ class _PostDialogState extends State<PostDialog> {
                   SizedBox(height: size.height * 0.025),
                   // entryList[entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue)],
                   dropdownValue == 0 ? const SizedBox(width: 0,) :
-                  EntryBlock(entry: _entryList[_entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue)].getEntry, imgFirst: true,)
+                  EntryBlock(entry: entryList[entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue)].getEntry, imgFirst: true,)
                 ],
               ),
             ),
@@ -203,12 +204,12 @@ class _PostDialogState extends State<PostDialog> {
                 onPressed: () {
                   var check = submitInputForm(formKey);
                   if (check) {
-                    int entryId = _entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue);
+                    int entryId = entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue);
                     Post newPost = Post(
                       postID: DateTime.now().millisecondsSinceEpoch,
                       description: description,
-                      entry: _entryList[entryId].getEntry,
-                      user: _entryList[entryId].getUser,
+                      entry: entryList[entryId].getEntry,
+                      user: entryList[entryId].getUser,
                       like: [],
                       likeCnt: 0,
                       comment: [],

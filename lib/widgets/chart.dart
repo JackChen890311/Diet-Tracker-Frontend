@@ -62,7 +62,7 @@ class _MyLineChartState extends State<MyLineChart> {
   // Map<DateTime, int> priceByDate = fakedata.priceByDate;
   // Map<DateTime, int> caloriesByDate = fakedata.caloriesByDate;
 
-  final List<EntryBlock> _entryList = [];
+  // final List<EntryBlock> _entryList = [];
   List<int> dateint = List.generate(31, (i) => i+1);
 
   List<int> generateValue(int yearid, int monthid, List<int> keyDate, Map<DateTime, int>valueByDate){
@@ -79,18 +79,18 @@ class _MyLineChartState extends State<MyLineChart> {
   }
 
   Future<void> getEntries(User user) async{
-    final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user);
-    List<dynamic> response = jsonDecode(entryListString['body']);
-    if (response.isEmpty){
-      return;
-    }
+    // final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user);
+    // List<dynamic> response = jsonDecode(entryListString['body']);
+    // if (response.isEmpty){
+    //   return;
+    // }
 
-    for (var entry in response){
-      _entryList.add(
-        EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
-      );
-    }
-    // print('Done');
+    // for (var entry in response){
+    //   _entryList.add(
+    //     EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
+    //   );
+    // }
+    print('Done');
     // print(_entryList.length);
   }
 
@@ -98,7 +98,8 @@ class _MyLineChartState extends State<MyLineChart> {
   Widget build(BuildContext context) {
     final global = GlobalService();
     final User user = global.getUserData;
-    _entryList.clear();
+    final List<EntryBlock> entryList = global.getEntryData;
+    // _entryList.clear();
 
     return FutureBuilder(
       future: getEntries(user),
@@ -108,8 +109,8 @@ class _MyLineChartState extends State<MyLineChart> {
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          Map<DateTime, int> priceByDate = fakedata.sumPriceByDate(_entryList);
-          Map<DateTime, int> caloriesByDate = fakedata.sumCaloriesByDate(_entryList);
+          Map<DateTime, int> priceByDate = fakedata.sumPriceByDate(entryList);
+          Map<DateTime, int> caloriesByDate = fakedata.sumCaloriesByDate(entryList);
           
           List<int> priceint = generateValue(widget.yearid, widget.monthid, dateint, priceByDate);
           List<int> caloriesint = generateValue(widget.yearid, widget.monthid, dateint, caloriesByDate);

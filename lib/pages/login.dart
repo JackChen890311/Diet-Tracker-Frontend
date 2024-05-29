@@ -9,6 +9,10 @@ import 'package:select_form_field/select_form_field.dart';
 import 'package:diet_tracker/utils/style.dart';
 import 'package:diet_tracker/widgets/button.dart';
 import 'package:diet_tracker/widgets/dialog.dart';
+import 'package:diet_tracker/utils/entry.dart';
+import 'package:diet_tracker/widgets/entry_card.dart';
+import 'package:diet_tracker/utils/post.dart';
+import 'package:diet_tracker/widgets/post_card.dart';
 import 'dart:convert';
 import 'package:diet_tracker/services/global_service.dart';
 
@@ -164,11 +168,62 @@ class _LoginPageState extends State<LoginPage> {
     
     var response1 = await ApiService().login(_account, _password);
     if(response1['statusCode']==200){
+      // User
       var response2 = await ApiService().getUser(_account);
       final _global = GlobalService();
       var json = jsonDecode(response2['body']);
       var user = User.fromJson(json);
       _global.setUserData = user;
+      
+      // Entry
+      final List<EntryBlock> entryList = [];
+      Entry emptyEntry = Entry(entryID: 0, user: User(account: '', userName: '', /*email: '',*/ password: ''), foodName: '', restoName: '', price: 0, calories: 0, date: DateTime.now());
+      final List<EntryBlock> entryListWithEmpty = [EntryBlock(entry: emptyEntry,)];
+      final Map<String, dynamic> entryListString = await ApiService().getEntriesOfUser(user);
+      List<dynamic> response = jsonDecode(entryListString['body']);
+      if (response.isNotEmpty){
+        for (var entry in response){
+          entryList.add(
+            EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
+          );
+          entryListWithEmpty.add(
+            EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
+          );
+        }
+      }
+      _global.setEntryData = entryList;
+      _global.setEntryDataWithEmpty = entryListWithEmpty;
+
+      // Post
+      int entryCnt = 0;
+      int postCnt = 0;
+      int likeCnt = 0;
+      final List<PostBlock> postList = [];
+      final Map<String, dynamic>postListString = await ApiService().getPostsAll();
+      List<dynamic> response3 = jsonDecode(postListString['body']);
+      
+
+      final Map<String, dynamic>postListStringUser = await ApiService().getPostsOfUser(user);
+      List<dynamic> response4 = jsonDecode(postListStringUser['body']);
+      entryCnt = response.isEmpty ? 0 : response.length;
+      postCnt = response4.isEmpty ? 0 : response4.length;
+
+      if (response3.isNotEmpty){
+        for (var post in response3){
+          // Post postObject = Post.fromJson(post);
+          postList.add(
+            PostBlock(post: Post.fromJson(post))
+          );
+          if(Post.fromJson(post).user.account == user.account){
+            likeCnt += Post.fromJson(post).likeCnt!;
+          }
+        }
+      }
+      _global.setPostData = postList;
+      _global.setEntryCnt = entryCnt;
+      _global.setPostCnt = postCnt;
+      _global.setLikeCnt = likeCnt;
+
       Navigator.pushNamed(context, '/home');
     }
     else{
