@@ -62,8 +62,8 @@ class _EntryDialogState extends State<EntryDialog> {
     var response = await ApiService().askGemini(imgString64);
     var message = jsonDecode(response['body'])['message'];
     var messageList = message.split('\n');
-    var calNum = messageList.last;
-    var message2 = messageList.sublist(0,messageList.length-1).join('\n');
+    var calNum = messageList.last.trim();
+    var message2 = messageList.sublist(0,messageList.length-1).join('\n').trim();
     print(response);
     // print(messageList);
     // print(calNum);
