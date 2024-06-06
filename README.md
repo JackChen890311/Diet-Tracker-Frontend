@@ -2,6 +2,9 @@
 NTU Web App Final Project
 Group 24：陳韋傑、鄭雅勻、曾奕崴、簡志宇
 
+## Presentaion Slides
+https://tinyurl.com/WebFinalTeam24
+
 ## Online Deployment Link
 https://diet-tracker-seven.vercel.app/  
 
