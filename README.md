@@ -1,6 +1,23 @@
-# diet_tracker
+# Diet Tracker (Front-End)
+NTU Web App Final Project
+Group 24：陳韋傑、鄭雅勻、曾奕崴、簡志宇
 
-A new Flutter project.
+## Online Deployment Link
+https://diet-tracker-seven.vercel.app/  
+
+### Test Account
+Account: ariel  
+Password: 1234  
+
+## Environment Setup
+Please install flttuer (3.19.0) on your device. You can find installation guide [here](https://docs.flutter.dev/get-started/install/windows/web?tab=download).  
+The dependencies needed is in `pubspec.yaml`. It should download automatically.
+
+## Running from local
+The command is `flutter run`. Please run this command in the base directory of this repo.
+
+## Backend Repo
+https://github.com/EircJian/Diet-Tracker-backend
 
 ## Getting Started
 

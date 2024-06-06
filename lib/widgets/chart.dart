@@ -62,7 +62,6 @@ class _MyLineChartState extends State<MyLineChart> {
   // Map<DateTime, int> priceByDate = fakedata.priceByDate;
   // Map<DateTime, int> caloriesByDate = fakedata.caloriesByDate;
 
-  // final List<EntryBlock> _entryList = [];
   List<int> dateint = List.generate(31, (i) => i+1);
 
   List<int> generateValue(int yearid, int monthid, List<int> keyDate, Map<DateTime, int>valueByDate){
@@ -78,98 +77,69 @@ class _MyLineChartState extends State<MyLineChart> {
     return valueint;
   }
 
-  Future<void> getEntries(User user) async{
-    // final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user);
-    // List<dynamic> response = jsonDecode(entryListString['body']);
-    // if (response.isEmpty){
-    //   return;
-    // }
-
-    // for (var entry in response){
-    //   _entryList.add(
-    //     EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
-    //   );
-    // }
-    print('Done');
-    // print(_entryList.length);
-  }
-
   @override
   Widget build(BuildContext context) {
     final global = GlobalService();
-    final User user = global.getUserData;
     final List<EntryBlock> entryList = global.getEntryData;
-    // _entryList.clear();
 
-    return FutureBuilder(
-      future: getEntries(user),
-      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          Map<DateTime, int> priceByDate = fakedata.sumPriceByDate(entryList);
-          Map<DateTime, int> caloriesByDate = fakedata.sumCaloriesByDate(entryList);
-          
-          List<int> priceint = generateValue(widget.yearid, widget.monthid, dateint, priceByDate);
-          List<int> caloriesint = generateValue(widget.yearid, widget.monthid, dateint, caloriesByDate);
+    Map<DateTime, int> priceByDate = fakedata.sumPriceByDate(entryList);
+    Map<DateTime, int> caloriesByDate = fakedata.sumCaloriesByDate(entryList);
+    
+    List<int> priceint = generateValue(widget.yearid, widget.monthid, dateint, priceByDate);
+    List<int> caloriesint = generateValue(widget.yearid, widget.monthid, dateint, caloriesByDate);
 
-          double maxYpos1 = priceint.reduce((value, element) => value > element ? value : element).toDouble() + 100;
-          double maxYpos2 = caloriesint.reduce((value, element) => value > element ? value : element).toDouble() + 100;
-          double maxYpos = (maxYpos1 > maxYpos2) ? maxYpos1 : maxYpos2;
+    double maxYpos1 = priceint.reduce((value, element) => value > element ? value : element).toDouble() + 100;
+    double maxYpos2 = caloriesint.reduce((value, element) => value > element ? value : element).toDouble() + 100;
+    double maxYpos = (maxYpos1 > maxYpos2) ? maxYpos1 : maxYpos2;
 
-          List<FlSpot> priceSpot = getSpotsFromXY(dateint, priceint);
-          List<FlSpot> caloriesSpot = getSpotsFromXY(dateint, caloriesint);
+    List<FlSpot> priceSpot = getSpotsFromXY(dateint, priceint);
+    List<FlSpot> caloriesSpot = getSpotsFromXY(dateint, caloriesint);
 
-          return LineChart(
-            LineChartData(
-              minX: 1,
-              maxX: 31,
-              minY: 0,
-              maxY: maxYpos,
-              gridData: const FlGridData(show: false),
-              titlesData: getTitlesData,
-              lineBarsData: [
-                LineChartBarData( 
-                  // show: showPrice,
-                  spots: priceSpot,
-                  color: CustomColor.darkBlue,
-                  barWidth: 3,
-                ),
-                LineChartBarData(
-                  // show: showCalories,
-                  spots: caloriesSpot,
-                  color: CustomColor.darkRed,
-                  barWidth: 3,
-                ),
-              ],
-              lineTouchData: LineTouchData(
-                touchTooltipData: LineTouchTooltipData(
-                  getTooltipColor: (LineBarSpot _) => CustomColor.grey,
-                  getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
-                                        bool first = false;
-                                        return touchedBarSpots.map((barSpot) {
-                                          if (first) {
-                                            first = false;
-                                            return LineTooltipItem(
-                                              'Price: ${barSpot.y}', const TextStyle(fontWeight: FontWeight.bold, color: CustomColor.darkBlue)
-                                            );
-                                          }
-                                          else{
-                                            first = true;
-                                            return LineTooltipItem(
-                                                'Calories: ${barSpot.y}', const TextStyle(fontWeight: FontWeight.bold, color: CustomColor.darkRed)
-                                            );
-                                          }
-                                        }).toList();
-                                      },
-                )
-              ),
-            )
-          );
-        }
-      }
+    return LineChart(
+      LineChartData(
+        minX: 1,
+        maxX: 31,
+        minY: 0,
+        maxY: maxYpos,
+        gridData: const FlGridData(show: false),
+        titlesData: getTitlesData,
+        lineBarsData: [
+          LineChartBarData( 
+            // show: showPrice,
+            spots: priceSpot,
+            color: CustomColor.darkBlue,
+            barWidth: 3,
+          ),
+          LineChartBarData(
+            // show: showCalories,
+            spots: caloriesSpot,
+            color: CustomColor.darkRed,
+            barWidth: 3,
+          ),
+        ],
+        lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+            getTooltipColor: (LineBarSpot _) => CustomColor.grey,
+            getTooltipItems: (List<LineBarSpot> touchedBarSpots) {
+                                  bool first = false;
+                                  return touchedBarSpots.map((barSpot) {
+                                    if (first) {
+                                      first = false;
+                                      return LineTooltipItem(
+                                        'Price: ${barSpot.y}', const TextStyle(fontWeight: FontWeight.bold, color: CustomColor.darkBlue)
+                                      );
+                                    }
+                                    else{
+                                      first = true;
+                                      return LineTooltipItem(
+                                          'Calories: ${barSpot.y}', const TextStyle(fontWeight: FontWeight.bold, color: CustomColor.darkRed)
+                                      );
+                                    }
+                                  }).toList();
+                                },
+          )
+        ),
+      )
     );
   }
 }

@@ -52,32 +52,6 @@ class _PostDialogState extends State<PostDialog> {
     return -a.entry.date!.compareTo(b.entry.date!);
   }
 
-  Future<void> getEntries(User user) async{
-    // final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user);
-    // List<dynamic> response = jsonDecode(entryListString['body']);
-
-    // Entry emptyEntry = Entry(entryID: 0, user: User(account: '', userName: '', /*email: '',*/ password: ''), foodName: '', restoName: '', price: 0, calories: 0, date: DateTime.now());
-    // _entryList.add(EntryBlock(entry: emptyEntry, imgFirst: true));
-
-    // if (response.isEmpty){
-    //   return;
-    // }
-
-    // for (var entry in response){
-    //   _entryList.add(
-    //     EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
-    //   );
-    // }
-
-
-    print('Done');
-    // print(_entryList.length);
-    // for (var entryBlock in _entryList) {
-    //   print(entryBlock.getEntry.entryID);
-    // }
-    
-  }
-
   @override
   void initState() {
     super.initState();
@@ -98,131 +72,114 @@ class _PostDialogState extends State<PostDialog> {
     var size = MediaQuery.of(context).size;
     var description = '';
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-    final User user = global.getUserData;
     final List<EntryBlock> entryList = global.getEntryDataWithEmpty;
-    // _entryList.clear();
 
-    return FutureBuilder(
-      future: getEntries(user),
-      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          // print('Build');
-          // for (var entryBlock in _entryList) {
-          //   print(entryBlock.getEntry.entryID);
-          // }
-          entryList.sort(sortComparisonByDate);
-          return AlertDialog(
-            title: const CustomText(
-              label: 'Please enter a new post (You need to have entries to add a post):', color: CustomColor.darkBlue,
-              type: 'titleLarge', align: 'left',),
-            content: SizedBox(
-              width: size.width * 0.8,
-              height: size.height * 0.6,
+    entryList.sort(sortComparisonByDate);
+    return AlertDialog(
+      title: const CustomText(
+        label: 'Please enter a new post (You need to have entries to add a post):', color: CustomColor.darkBlue,
+        type: 'titleLarge', align: 'left',),
+      content: SizedBox(
+        width: size.width * 0.8,
+        height: size.height * 0.6,
+        child: Column(
+          children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.fastfood),
+                    SizedBox(width: size.width * 0.025),
+                    SizedBox(width: size.width * 0.3, child: 
+                      DropdownButton<int>(
+                        isExpanded: true,
+                        value: dropdownValue,
+                        onChanged: (int? newValue) {
+                          setState(() {
+                            dropdownValue = newValue!;
+                          });
+                        },
+                        items: entryList.map<DropdownMenuItem<int>>((EntryBlock entryBlock) {
+                          var entry = entryBlock.getEntry;
+                          return DropdownMenuItem<int>(
+                            value: entry.entryID,
+                            child: entry.entryID == 0 ? const Text('Please select an entry') :
+                            Text('${DateFormat('yyyy-MM-dd').format(entry.date!)} : ${entry.foodName} @ ${entry.restoName}'),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Form(
+              key: formKey,
               child: Column(
                 children: [
-                  Column(
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.fastfood),
-                          SizedBox(width: size.width * 0.025),
-                          SizedBox(width: size.width * 0.3, child: 
-                            DropdownButton<int>(
-                              isExpanded: true,
-                              value: dropdownValue,
-                              onChanged: (int? newValue) {
-                                setState(() {
-                                  dropdownValue = newValue!;
-                                });
-                              },
-                              items: entryList.map<DropdownMenuItem<int>>((EntryBlock entryBlock) {
-                                var entry = entryBlock.getEntry;
-                                return DropdownMenuItem<int>(
-                                  value: entry.entryID,
-                                  child: entry.entryID == 0 ? const Text('Please select an entry') :
-                                  Text('${DateFormat('yyyy-MM-dd').format(entry.date!)} : ${entry.foodName} @ ${entry.restoName}'),
-                                );
-                              }).toList(),
-                            ),
+                      const Icon(Icons.text_snippet),
+                      SizedBox(width: size.width * 0.025),
+                      SizedBox(width: size.width * 0.3, child: 
+                        TextFormField(
+                          // keyboardType: TextInputType.multiline,
+                          // maxLines: null,
+                          decoration: const InputDecoration(
+                            labelText: 'Description',
+                            hintText: 'Say something about the food!',
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Form(
-                    key: formKey,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            const Icon(Icons.text_snippet),
-                            SizedBox(width: size.width * 0.025),
-                            SizedBox(width: size.width * 0.3, child: 
-                              TextFormField(
-                                // keyboardType: TextInputType.multiline,
-                                // maxLines: null,
-                                decoration: const InputDecoration(
-                                  labelText: 'Description',
-                                  hintText: 'Say something about the food!',
-                                ),
-                                onSaved: (value) => description = value!,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'This field cannot be empty';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            )
-                        ]),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: size.height * 0.025),
-                  // entryList[entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue)],
-                  dropdownValue == 0 ? const SizedBox(width: 0,) :
-                  EntryBlock(entry: entryList[entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue)].getEntry, imgFirst: true,)
+                          onSaved: (value) => description = value!,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'This field cannot be empty';
+                            }
+                            return null;
+                          },
+                        ),
+                      )
+                  ]),
                 ],
               ),
             ),
-            actions: <Widget>[
-              TextButton(
-                child: const CustomText(label: 'Cancel'),
-                onPressed: () {
-                  User emptyUser = User(account: '', userName: '', /*email: '',*/ password: '');
-                  Entry emptyEntry = Entry(entryID: 0, user: emptyUser);
-                  Post emptyPost = Post(postID: 0, user: emptyUser, entry: emptyEntry);
-                  Navigator.pop(context, emptyPost);
-                },
-              ),
-              TextButton(
-                child: const CustomText(label: 'Done'),
-                onPressed: () {
-                  var check = submitInputForm(formKey);
-                  if (check) {
-                    int entryId = entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue);
-                    Post newPost = Post(
-                      postID: DateTime.now().millisecondsSinceEpoch,
-                      description: description,
-                      entry: entryList[entryId].getEntry,
-                      user: entryList[entryId].getUser,
-                      like: [],
-                      likeCnt: 0,
-                      comment: [],
-                      commentCnt: 0,);
-                    // TODO: send new post to db
-                    Navigator.pop(context, newPost);
-                  }
-                },
-              ),
-            ],
-          );
-        }
-      }
+            SizedBox(height: size.height * 0.025),
+            // entryList[entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue)],
+            dropdownValue == 0 ? const SizedBox(width: 0,) :
+            EntryBlock(entry: entryList[entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue)].getEntry, imgFirst: true,)
+          ],
+        ),
+      ),
+      actions: <Widget>[
+        TextButton(
+          child: const CustomText(label: 'Cancel'),
+          onPressed: () {
+            User emptyUser = User(account: '', userName: '', /*email: '',*/ password: '');
+            Entry emptyEntry = Entry(entryID: 0, user: emptyUser);
+            Post emptyPost = Post(postID: 0, user: emptyUser, entry: emptyEntry);
+            Navigator.pop(context, emptyPost);
+          },
+        ),
+        TextButton(
+          child: const CustomText(label: 'Done'),
+          onPressed: () {
+            var check = submitInputForm(formKey);
+            if (check) {
+              int entryId = entryList.indexWhere((entryBlock) => entryBlock.getEntry.entryID == dropdownValue);
+              Post newPost = Post(
+                postID: DateTime.now().millisecondsSinceEpoch,
+                description: description,
+                entry: entryList[entryId].getEntry,
+                user: entryList[entryId].getUser,
+                like: [],
+                likeCnt: 0,
+                comment: [],
+                commentCnt: 0,);
+              // TODO: send new post to db
+              Navigator.pop(context, newPost);
+            }
+          },
+        ),
+      ],
     );
   }
 }

@@ -29,29 +29,14 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  late User user;
-  // final List<EntryBlock> _entryList = [];
-  // final List<EntryBlock> _entryList = fakedata.entryList;
+  final global = GlobalService();
+  final User user = GlobalService().getUserData;
+  List<EntryBlock> entryList = GlobalService().getEntryData;
+  List<EntryBlock> entryListWithEmpty = GlobalService().getEntryDataWithEmpty;
 
   int calculateDifference(DateTime date) {
     DateTime now = DateTime.now();
     return DateTime(date.year, date.month, date.day).difference(DateTime(now.year, now.month, now.day)).inDays;
-  }
-
-  Future<void> getEntries(User user) async{
-    // final Map<String, dynamic>entryListString = await ApiService().getEntriesOfUser(user);
-    // List<dynamic> response = jsonDecode(entryListString['body']);
-    // if (response.isEmpty){
-    //   return;
-    // }
-
-    // for (var entry in response){
-    //   _entryList.add(
-    //     EntryBlock(entry: Entry.fromJson(entry), imgFirst: true)//_entryList.length.isEven)
-    //   );
-    // }
-    print('Done');
-    // print(_entryList.length);
   }
 
   List<double> calculateTotal(List<EntryBlock> entryList){
@@ -97,12 +82,15 @@ class HomePageState extends State<HomePage> {
       return;
     }
     else{
-      // setState(() {
-      //   _entryList.add(
-      //     EntryBlock(entry: newEntry, imgFirst: _entryList.length.isEven)
-      //   );
-      //   _entryList.sort(sortComparisonByDate);
-      // });
+      setState(() {
+        entryList.add(EntryBlock(entry: newEntry, imgFirst: true));
+        entryList.sort(sortComparisonByDate);
+        entryListWithEmpty.add(EntryBlock(entry: newEntry, imgFirst: true));
+      });
+      global.setEntryData = entryList;
+      global.setEntryDataWithEmpty = entryListWithEmpty;
+      global.setEntryCnt = global.getEntryCnt + 1;
+
       // To Database
       // print(newEntry.toJson());
       var result = await ApiService().createEntry(newEntry);
@@ -157,93 +145,78 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    final global = GlobalService();
-    final User user = global.getUserData;
-    List<EntryBlock> entryList = global.getEntryData;
     var decodedJson = user.toJson();
     var userImg = decodedJson['userImg'];
     var userGender = decodedJson['gender'];
     var username = decodedJson['userName'];
+    var total = calculateTotal(entryList);
+    var totalToday = calculateTotalToday(entryList);
+    entryList.sort(sortComparisonByDate);
 
-    return FutureBuilder(
-      future: getEntries(user),
-      builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          var total = calculateTotal(entryList);
-          var totalToday = calculateTotalToday(entryList);
-          entryList.sort(sortComparisonByDate);
-
-          return Scaffold(
-            appBar: const MyAppBar(title: 'Diet Tracker'),
-            body: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children:[
-              SizedBox(height: size.height * 0.05),
-              CircleAvatar(
-                backgroundColor: Colors.black12,
-                radius: size.height * 0.12,
-                child: CircleAvatar(
-                  backgroundImage: userImg==null? userGender==0? const AssetImage('assets/headshot_female.jpg'):const AssetImage('assets/headshot_male.jpg'): AssetImage(userImg),
-                  radius: size.height * 0.1,
-                ),
-              ),
-              SizedBox(height: size.height * 0.05),
-              CustomText(label: "Welcome, $username!", type: 'displaySmall',),
-              const SizedBox(height: 50),
-              const CustomText(label: "Your Summaries", type: 'titleLarge',),
-              const SizedBox(height: 20),
-              CustomText(label: "Total Price: ${total[0]}", type: 'titleSmall',),
-              const SizedBox(height: 20),
-              CustomText(label: "Total Calories: ${total[1]}", type: 'titleSmall',),
-              const SizedBox(height: 20),
-              CustomText(label: "Total Price Today: ${totalToday[0]}", type: 'titleSmall',),
-              const SizedBox(height: 20),
-              CustomText(label: "Total Calories Today: ${totalToday[1]}", type: 'titleSmall',),
-            ],
+    return Scaffold(
+      appBar: const MyAppBar(title: 'Diet Tracker'),
+      body: Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+    Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children:[
+        SizedBox(height: size.height * 0.05),
+        CircleAvatar(
+          backgroundColor: Colors.black12,
+          radius: size.height * 0.12,
+          child: CircleAvatar(
+            backgroundImage: userImg==null? userGender==0? const AssetImage('assets/headshot_female.jpg'):const AssetImage('assets/headshot_male.jpg'): AssetImage(userImg),
+            radius: size.height * 0.1,
           ),
-          entryList.isEmpty ? 
-            const Center(
-                child: CustomText(label: "No entries yet.\n\nClick the button below to add a new entry.\n", 
-                              type: 'displaySmall',),
-              )
-            :
-            SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Center(child: 
-                SizedBox(
-                  height: size.height * 0.9,
-                  width: size.width * 0.5,
-                  child: ListView.builder(
-                    itemCount: entryList.length,
-                    itemBuilder: (context, index){
-                      return entryList[index];
-                    }
-                  ),
-                )
-              )
+        ),
+        SizedBox(height: size.height * 0.05),
+        CustomText(label: "Welcome, $username!", type: 'displaySmall',),
+        const SizedBox(height: 50),
+        const CustomText(label: "Your Summaries", type: 'titleLarge',),
+        const SizedBox(height: 20),
+        CustomText(label: "Total Price: ${total[0]}", type: 'titleSmall',),
+        const SizedBox(height: 20),
+        CustomText(label: "Total Calories: ${total[1]}", type: 'titleSmall',),
+        const SizedBox(height: 20),
+        CustomText(label: "Total Price Today: ${totalToday[0]}", type: 'titleSmall',),
+        const SizedBox(height: 20),
+        CustomText(label: "Total Calories Today: ${totalToday[1]}", type: 'titleSmall',),
+      ],
+    ),
+    entryList.isEmpty ? 
+      const Center(
+          child: CustomText(label: "No entries yet.\n\nClick the button below to add a new entry.\n", 
+                        type: 'displaySmall',),
+        )
+      :
+      SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Center(child: 
+          SizedBox(
+            height: size.height * 0.9,
+            width: size.width * 0.5,
+            child: ListView.builder(
+              itemCount: entryList.length,
+              itemBuilder: (context, index){
+                return entryList[index];
+              }
             ),
-          // Column(
-          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-          //   children: [
-          //     Image.asset('assets/images/illustration-3.png', height: size.height * 0.5),
-          //   ],
-          // )
-        ],),
-            floatingActionButton: FloatingActionButton(
-              onPressed: _addNewEntry,
-              tooltip: 'Add New Entry',
-              child: const Icon(Icons.add),
-            ),
-          );
-        }
-      },
+          )
+        )
+      ),
+    // Column(
+    //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+    //   children: [
+    //     Image.asset('assets/images/illustration-3.png', height: size.height * 0.5),
+    //   ],
+    // )
+  ],),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addNewEntry,
+        tooltip: 'Add New Entry',
+        child: const Icon(Icons.add),
+      ),
     );
   }
 }
