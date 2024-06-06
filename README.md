@@ -16,13 +16,13 @@ Password: 1234
 Please install flttuer (3.19.0) on your device. You can find installation guide [here](https://docs.flutter.dev/get-started/install/windows/web?tab=download).  
 The dependencies needed is in `pubspec.yaml`. It should download automatically.
 
-## Running from local
+## Running from Local
 The command is `flutter run`. Please run this command in the base directory of this repo.
 
-## Backend Repo
+## Backend Repository
 https://github.com/EircJian/Diet-Tracker-backend
 
-## Getting Started
+## Getting Started with Flutter
 
 This project is a starting point for a Flutter application.
 
