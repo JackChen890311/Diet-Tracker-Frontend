@@ -29,7 +29,7 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   final global = GlobalService();
   final user = GlobalService().getUserData;
-  final List<PostBlock> postList = GlobalService().getPostData;
+  List<PostBlock> postList = GlobalService().getPostData;
 
   int sortComparisonByDate(PostBlock a, PostBlock b){
     return -a.getEntry.date!.compareTo(b.getEntry.date!);
@@ -101,6 +101,7 @@ class _AccountPageState extends State<AccountPage> {
 
     }
   }
+  
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;

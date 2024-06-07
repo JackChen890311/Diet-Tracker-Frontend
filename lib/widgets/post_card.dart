@@ -33,7 +33,8 @@ class _PostBlockState extends State<PostBlock> {
   // Post get getPost => widget.post;
   // User get getUser => widget.post.user;
   // Entry get getEntry => widget.post.entry;
-
+  final global = GlobalService();
+  final globalUser = GlobalService().getUserData;
   late String _comment;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final commentController = TextEditingController();
@@ -50,6 +51,24 @@ class _PostBlockState extends State<PostBlock> {
   Future<void> likePost(int postID, User globalUser) async{
     var response = await ApiService().likePost(postID, globalUser);
     if(response['statusCode']==200){
+      Map info = {
+        'postID':postID,
+        'valueChange':1,
+        'likeUsr':globalUser, 
+      };
+      global.setSpecificPostLikeCnt = info;
+      List<PostBlock> pl = global.getPostData;
+      for(PostBlock postblock in pl){
+        if(postblock.getPost.postID==postID){
+          if(postblock.getPost.user.account==globalUser.account){
+            // print(global.getLikeCnt);
+            global.setLikeCnt = global.getLikeCnt + 1;
+            // print(global.getLikeCnt);
+            break;
+          }
+          // print('${postblock.getPost.likeCnt}');
+        }
+      }
       Navigator.pushNamed(context, '/account');
     }
   }
@@ -57,6 +76,24 @@ class _PostBlockState extends State<PostBlock> {
   Future<void> dislikePost(int postID, User globalUser) async{
     var response = await ApiService().dislikePost(postID, globalUser);
     if(response['statusCode']==200){
+      Map info = {
+        'postID':postID,
+        'valueChange':-1,
+        'likeUsr':globalUser, 
+      };
+      global.setSpecificPostLikeCnt = info;
+      List<PostBlock> pl = global.getPostData;
+      for(PostBlock postblock in pl){
+        if(postblock.getPost.postID==postID){
+          if(postblock.getPost.user.account==globalUser.account){
+            // print(global.getLikeCnt);
+            global.setLikeCnt = global.getLikeCnt - 1;
+            // print(global.getLikeCnt);
+            break;
+          }
+          // print('${postblock.getPost.likeCnt}');
+        }
+      }
       Navigator.pushNamed(context, '/account');
     }
   }
@@ -65,6 +102,12 @@ class _PostBlockState extends State<PostBlock> {
     Comment commentInfo = Comment(user: globalUser, content: comment, datetime: DateTime.now().millisecondsSinceEpoch);
     var response1 = await ApiService().commentPost(postID, commentInfo);
     if(response1['statusCode']==200){
+      Map info = {
+        'postID':postID,
+        'content':comment,
+        'CommentUsr':globalUser, 
+      };
+      global.setSpecificPostCommentCnt = info;
       Navigator.pushNamed(context, '/account');
     }
   }
@@ -72,13 +115,9 @@ class _PostBlockState extends State<PostBlock> {
 
   @override
   Widget build(BuildContext context) {
-    var _global = GlobalService();
-    var globalUser = _global.getUserData;
-    
-    for(var likeUser in widget.post.like!){
-      likeUserList.add(likeUser['account']);
-    }
-    
+    // var _global = GlobalService();
+    // var globalUser = _global.getUserData;
+
     for(var comment in widget.post.comment!){
       Comment commentInfo = Comment.fromJson(comment);
       commentList.add([commentInfo.user, commentInfo.content]);
@@ -95,11 +134,7 @@ class _PostBlockState extends State<PostBlock> {
     var calories = entry.calories;
     var userImg = entry.user.userImg;
     var userGender = entry.user.gender;
-    // var isLiked = likeList.contains(globalUser);
-    // if(comment.isEmpty){
-    //   comment = [];
-    // }
-    
+      
 
     return SizedBox(
       // height: size.height * 0.9,
@@ -177,9 +212,9 @@ class _PostBlockState extends State<PostBlock> {
                 SizedBox(width: size.width * 0.04),
                 IconButton(
                   padding: const EdgeInsets.symmetric(vertical: 12),
-                  icon: likeUserList.contains(globalUser.account)? Icon(Icons.favorite, color:Colors.red[300]): const Icon(Icons.favorite),
+                  icon: widget.getPost.like!.contains(globalUser)? Icon(Icons.favorite, color:Colors.red[300]): const Icon(Icons.favorite),
                   onPressed: () {
-                    if(!likeUserList.contains(globalUser.account)){
+                    if(! widget.getPost.like!.contains(globalUser)){
                       likePost(widget.post.postID, globalUser);
                     }
                     else{
@@ -202,7 +237,7 @@ class _PostBlockState extends State<PostBlock> {
                   },
                 ),
                 SizedBox(width: size.width * 0.02),
-                CustomText(label: likeUserList.length.toString()),
+                CustomText(label: widget.getPost.likeCnt.toString()),
                 SizedBox(width: size.width * 0.02),
                 IconButton(
                   icon: const Icon(Icons.comment),
