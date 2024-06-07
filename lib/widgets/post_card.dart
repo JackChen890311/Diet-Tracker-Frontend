@@ -48,7 +48,7 @@ class _PostBlockState extends State<PostBlock> {
     super.dispose();
   }
 
-  Future<void> likePost(int postID, User globalUser) async{
+  Future<void> likePost(int postID, User postUser, User globalUser) async{
     var response = await ApiService().likePost(postID, globalUser);
     if(response['statusCode']==200){
       Map info = {
@@ -57,23 +57,14 @@ class _PostBlockState extends State<PostBlock> {
         'likeUsr':globalUser, 
       };
       global.setSpecificPostLikeCnt = info;
-      List<PostBlock> pl = global.getPostData;
-      for(PostBlock postblock in pl){
-        if(postblock.getPost.postID==postID){
-          if(postblock.getPost.user.account==globalUser.account){
-            // print(global.getLikeCnt);
-            global.setLikeCnt = global.getLikeCnt + 1;
-            // print(global.getLikeCnt);
-            break;
-          }
-          // print('${postblock.getPost.likeCnt}');
-        }
+      if(postUser.account==globalUser.account){
+        global.setLikeCnt = global.getLikeCnt + 1;
       }
       Navigator.pushNamed(context, '/account');
     }
   }
 
-  Future<void> dislikePost(int postID, User globalUser) async{
+  Future<void> dislikePost(int postID, User postUser, User globalUser) async{
     var response = await ApiService().dislikePost(postID, globalUser);
     if(response['statusCode']==200){
       Map info = {
@@ -82,17 +73,8 @@ class _PostBlockState extends State<PostBlock> {
         'likeUsr':globalUser, 
       };
       global.setSpecificPostLikeCnt = info;
-      List<PostBlock> pl = global.getPostData;
-      for(PostBlock postblock in pl){
-        if(postblock.getPost.postID==postID){
-          if(postblock.getPost.user.account==globalUser.account){
-            // print(global.getLikeCnt);
-            global.setLikeCnt = global.getLikeCnt - 1;
-            // print(global.getLikeCnt);
-            break;
-          }
-          // print('${postblock.getPost.likeCnt}');
-        }
+      if(postUser.account==globalUser.account){
+        global.setLikeCnt = global.getLikeCnt - 1;
       }
       Navigator.pushNamed(context, '/account');
     }
@@ -215,10 +197,10 @@ class _PostBlockState extends State<PostBlock> {
                   icon: widget.getPost.like!.contains(globalUser)? Icon(Icons.favorite, color:Colors.red[300]): const Icon(Icons.favorite),
                   onPressed: () {
                     if(! widget.getPost.like!.contains(globalUser)){
-                      likePost(widget.post.postID, globalUser);
+                      likePost(widget.post.postID, widget.post.user, globalUser);
                     }
                     else{
-                      dislikePost(widget.post.postID, globalUser);
+                      dislikePost(widget.post.postID, widget.post.user, globalUser);
                     }
                     
                     // setState(() {
